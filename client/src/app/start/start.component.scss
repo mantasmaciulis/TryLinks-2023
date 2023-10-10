@@ -1,0 +1,28 @@
+:host {
+  height: 100%;
+  width: 100%;
+  display:flex;
+  flex-direction: column;
+}
+
+.tl-start-content {
+  flex-grow: 1;
+
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.tl-start-header {
+  display: flex;
+}
+
+.tl-logo {
+  height: 40px;
+  margin: 0 16px;
+}
+
+.tl-start-card {
+  min-width: 40%;
+}

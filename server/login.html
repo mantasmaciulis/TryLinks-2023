@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>TryLinks Login</title>
+</head>
+
+<body>
+  <form action="">
+    Username: <input id="username" autocomplete="off" /><br>
+    Password: <input id="password" type="password" autocomplete="off" /><br>
+    <button id="login-btn">Login</button>
+  </form>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script>
+    $(function () {
+      $('form').submit(function () {
+        console.log('start calling login');
+        var username = $('#username').val();
+        var password = $('#password').val();
+        console.log(username + '    ' + password);
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:5000/api/user/login",
+          data: {
+            username: username,
+            password: password
+          },
+          success: function () {
+            console.log('login successful!');
+            window.location.replace('http://localhost:5000/test');
+          },
+          error: function (request, status, error) {
+            console.log(request.responseText);
+          }
+        });
+        return false;
+      })
+    })
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,56 @@
+<mat-toolbar class="tl-start-header">
+  <button mat-button matTooltip="Show all tutorials" (click)="drawer.toggle()">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <img class="tl-logo" src="assets/logo.svg" alt="Links Logo" />
+  <div class="tl-header-name">TryLinks Interactive Shell</div>
+  <div class="tl-expander"></div>
+  <button mat-button color="primary" class="tl-tutorial-button" (click)="navToDashboardPage()">
+    Dashboard
+  </button>
+  <button mat-button color="primary" class="tl-interactive-button" (click)="navToInteractivePage()">
+    Interactive
+  </button>
+  <button mat-button color="primary" class="tl-logout-button" (click)="logout()">
+    Log out
+  </button>
+</mat-toolbar>
+
+<mat-drawer-container class="tl-tutorial-container" autosize>
+  <mat-drawer #drawer class="tl-tutorial-sidenav" mode="side">
+    <mat-list>
+      <h3 mat-subheader>Tutorials</h3>
+      <mat-list-item *ngFor="let header of headers; let i = index" class="tl-nav-item">
+        <button mat-button (click)="navToTutorial(header['tutorial_id'])" class="tl-tutorial-header">
+          {{ i + 1 }}. {{ header['title'] }}
+        </button>
+      </mat-list-item>
+    </mat-list>
+  </mat-drawer>
+
+  <div class="tl-tutorial-content">
+    <div class="tl-tutorial-main-desc markdown-body" [innerHTML]="tutorialDescription | MarkdownToHtml"></div>
+
+    <div class="tl-tutorial-main-col">
+      <ngx-codemirror [(ngModel)]="source" [options]="editorOptions"></ngx-codemirror>
+      <div class="tl-tutorial-main-render-control">
+        <pre class="tl-tutorial-main-render-error">{{ compileError }}</pre>
+        <button mat-raised-button color="primary" class="tl-compile-btn" (click)="onCompile()">
+          Save and Compile
+        </button>
+      </div>
+    </div>
+
+    <div class="tl-tutorial-main-render">
+      <div *ngIf="port == null" class="tl-tutorial-main-render-empty">
+        <h2>Preview Page</h2>
+        <p>
+          When you are happy with your Links code, <br />press the "Compile"
+          button below and see the web page generated!
+        </p>
+      </div>
+      <iframe *ngIf="port != null" [src]="renderUrl" height="100%" width="100%" onload="return false;"
+        frameborder="0"></iframe>
+    </div>
+  </div>
+</mat-drawer-container>

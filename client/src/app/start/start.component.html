@@ -1,0 +1,20 @@
+<mat-toolbar class="tl-start-header">
+  <img class="tl-logo" src="assets/logo.svg" alt="Links Logo">
+  <div class="tl-header-name">TryLinks Sign in / Sign up</div>
+</mat-toolbar>
+<div class="tl-start-content">
+  <mat-card class="tl-start-card">
+    <mat-tab-group mat-align-tabs="center">
+      <mat-tab label="Sign in">
+        <ng-template matTabContent>
+          <app-sign-in></app-sign-in>
+        </ng-template>
+      </mat-tab>
+      <mat-tab label="Sign up">
+        <ng-template matTabContent>
+            <app-sign-up></app-sign-up>
+        </ng-template>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card>
+</div>
