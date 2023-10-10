@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>SocketIO Shell App</title>
+</head>
+<style type="text/css">
+	* {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+	}
+
+	body {
+		font: 13px Helvetica, Arial;
+	}
+
+	form {
+		background: #000;
+		padding: 3px;
+		position: fixed;
+		bottom: 0;
+		width: 100%;
+	}
+
+	form input {
+		border: 0;
+		padding: 10px;
+		width: 90%;
+		margin-right: .5%;
+	}
+
+	form button {
+		width: 9%;
+		background: rgb(130, 224, 255);
+		border: none;
+		padding: 10px;
+	}
+
+	#messages {
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	#messages li {
+		padding: 5px 10px;
+	}
+
+	#messages li:nth-child(odd) {
+		background: #eee;
+	}
+
+	#messages li.shell-error {
+		background-color: #ff4d4d;
+		color: whtie;
+	}
+</style>
+
+<body>
+	<ul id="messages"></ul>
+	<form action="">
+		<input id="m" autocomplete="off" />
+		<button>Send</button>
+	</form>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script>
+		$(function () {
+			$.get("http://localhost:5000/api/initInteractive", function (data, status) {
+        console.log(data)
+        var namespace = 'http://localhost:5000/nickwu';
+        console.log(namespace);
+				var socket = io.connect(namespace);
+				$('form').submit(function () {
+					const cmd = $('#m').val();
+					$('#messages').append($('<li>').text(cmd));
+					socket.emit('new command', cmd);
+					$('#m').val('');
+					return false;
+				});
+
+				socket.on('shell output', function (output) {
+					console.log(output);
+					$('#messages').append($('<li>').append($('<pre>').text(output)));
+				});
+
+				socket.on('compile error', function (error) {
+					console.log(error);
+					$('#messages').append($('<li>').attr('class', 'shell-error').append($('<pre>').text(error)));
+				});
+			});
+		})
+	</script>
+</body>
+
+</html>

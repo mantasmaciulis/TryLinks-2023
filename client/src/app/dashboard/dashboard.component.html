@@ -1,0 +1,43 @@
+<mat-toolbar class="tl-start-header">
+  <img class="tl-logo" src="assets/logo.svg" alt="Links Logo">
+  <div class="tl-header-name">TryLinks Dashboard</div>
+  <div class="tl-expander"></div>
+  <button mat-button color="primary" class="tl-logout-button" (click)="logout()">Log out</button>
+</mat-toolbar>
+<div class="tl-dashboard-content">
+  <div class="tl-welcome-msg">Hello, {{username}}!</div>
+
+  <div class="tl-dashboard-nav">
+    <mat-card class="tl-dashboard-interactive">
+      <mat-card-header>
+        <mat-card-title>Interactive Mode</mat-card-title>
+      </mat-card-header>
+      <img class="tl-demo-gif" src="assets/REPL.gif" alt="Links REPL Demo">
+      <mat-card-content>
+        <p class="tl-dashboard-content-desc">
+          This is an interactive Links shell, where you can play with Links language and get familiar with the syntax.
+        </p>
+        <p class="tl-dashboard-content-desc">
+          We also have an embedded guide to help you get started!
+        </p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button class="tl-nav-button" mat-raised-button color="primary" (click)="navToInteractivePage()">Launch Links Interactive Mode</button>
+      </mat-card-actions>
+    </mat-card>
+    <mat-card class="tl-dashboard-tutorial">
+      <mat-card-header>
+        <mat-card-title class="tl-dashboard-content-header">Tutorials Mode</mat-card-title>
+      </mat-card-header>
+      <img class="tl-demo-gif" src="assets/tutorial.gif" alt="Links tutorial Demo">
+      <mat-card-content>
+        <p class="tl-dashboard-content-desc">
+          We also have a short series of tutorials which teach you how to use Links for web programming. Take a tour!
+        </p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button class="tl-nav-button" mat-raised-button color="primary" (click)="navToTutorialPage()">Launch Links Tutorials Mode</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

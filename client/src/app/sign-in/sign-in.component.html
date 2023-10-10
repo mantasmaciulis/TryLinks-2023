@@ -1,0 +1,45 @@
+<form [formGroup]="formGroup">
+  <mat-form-field class="input-field">
+    <mat-label>Username</mat-label>
+    <input
+      matInput
+      required
+      formControlName="username"
+      type="text"
+      (keypress)="resetSignInError()"
+    />
+    <mat-error *ngIf="username.hasError('pattern')">
+      Username must only contain alphanumeric characters
+    </mat-error>
+    <mat-error *ngIf="signInFailed"
+      >Your username or password is not correct.</mat-error
+    >
+  </mat-form-field>
+  <mat-form-field class="input-field">
+    <mat-label>Password</mat-label>
+    <input
+      matInput
+      required
+      formControlName="password"
+      [type]="hidePassword ? 'password' : 'text'"
+      (keypress)="resetSignInError()"
+    />
+    <mat-icon matSuffix (click)="hidePassword = !hidePassword"
+      >{{ hidePassword ? "visibility_off" : "visibility" }}
+    </mat-icon>
+    <mat-error *ngIf="signInFailed"
+      >Your username or password is not correct.</mat-error
+    >
+  </mat-form-field>
+  <mat-progress-spinner *ngIf="signInLoading" color="primary">
+  </mat-progress-spinner>
+  <button
+    *ngIf="!signInLoading"
+    class="sign-in-button"
+    mat-raised-button
+    color="primary"
+    (click)="onSignIn()"
+  >
+    Sign in
+  </button>
+</form>
