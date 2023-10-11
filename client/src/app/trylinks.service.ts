@@ -11,14 +11,14 @@ import { SessionStorage, SessionStorageService } from 'ngx-store';
 export class TrylinksService {
   static headers = new HttpHeaders({ 'Content-Type': 'application/json' });
   static serverURL = environment.serviceUrl;
-  static serverAddr = TrylinksService.serverURL + ':5000';
+  static serverAddr = TrylinksService.serverURL + ':' +environment.port;
   @SessionStorage() username = 'unknown user';
   @SessionStorage() lastTutorialId: number = null;
 
   constructor(
     private http: HttpClient,
     private sessionStorageService: SessionStorageService
-  ) {}
+  ) { }
 
   signup(username: string, email: string, password: string) {
     return this.http
