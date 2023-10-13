@@ -27,13 +27,24 @@ var server = http.createServer(app);
  */
 
 server.listen(port, host);
-var io = require('socket.io')(server);
-
+var io;
 if (process.env.NODE_ENV === 'development') {
-  //Allow all origins on develop
-  io.origins('*:*');
+  // Allow specific origin and credentials on develop
+  io = require('socket.io')(server, {
+    cors: {
+      origin: "http://localhost:4201",
+      credentials: true
+    }
+  });
+} else {
+  // specify production origins as needed
+  io = require('socket.io')(server, {
+    cors: {
+      origin: "",
+      credentials: true
+    }
+  });
 }
-
 require('../sockets_base')(io);
 server.on('error', onError);
 server.on('listening', onListening);

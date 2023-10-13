@@ -11,45 +11,40 @@ function initInteractive (req, res, next) {
     return
   }
 
-  var io = require('../sockets_base').io
-  var socketPath = '/' + req.session.user.username
-  io.of(socketPath).on('connection', function (socket) {
-    // start new shell process
-    var shell = spawn('linx')
+  const io = require('../sockets_base').io;
+  const socketPath = '/' + req.session.user.username;
+  const namespace = io.of(socketPath);
 
-    socket.on('new command', function (cmd) {
-      // console.log('new command: ' + cmd)
+  namespace.on('connection', (socket) => {
+    const shell = spawn('linx');
 
-      const forbiddenPattern = /.*@/g
+    socket.on('new command', (cmd) => {
+      const forbiddenPattern = /.*@/g;
       if (forbiddenPattern.test(cmd)) {
-        // console.log(`Encounter forbidden command: ${cmd}`)
-        socket.emit('shell error', forbiddenMessage)
+        socket.emit('shell error', forbiddenMessage);
       } else {
-        shell.stdin.write(cmd + '\n')
+        shell.stdin.write(cmd + '\n');
       }
-    })
+    });
 
     shell.stdout.on('data', (data) => {
-      socket.emit('shell output', data.toString())
-      // console.log('sent stdout: ' + data)
-    })
+      socket.emit('shell output', data.toString());
+    });
 
     shell.stderr.on('data', (data) => {
-      socket.emit('shell error', data.toString())
-      // console.log('sent stderr: ' + data)
-    })
+      socket.emit('shell error', data.toString());
+    });
 
-    socket.on('disconnect', function () {
-      // console.log('killing shell')
-      shell.kill()
-      // console.log('shell killed: ' + shell.killed)
-      delete io.nsps[socketPath]
-    })
-  })
+    socket.on('disconnect', () => {
+      shell.kill();
+      namespace.removeAllListeners();
+      delete io.nsps[socketPath];
+    });
+  });
 
-  res.status(200).json({path: socketPath})
+  res.status(200).json({path: socketPath});
 }
 
 module.exports = {
   initInteractive: initInteractive
-}
+};

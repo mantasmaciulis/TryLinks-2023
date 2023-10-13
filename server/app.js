@@ -40,6 +40,12 @@ app.use(function (req, res, next) {
   var allowedOrigins = process.env.PROD_DOMAIN;
   var origin = req.headers.origin;
 
+  // Log the origin and allowed origins for each request
+  console.log('Origin:', origin);
+  console.log('Allowed Origins:', allowedOrigins);
+  var allowedOrigins = process.env.PROD_DOMAIN;
+  var origin = req.headers.origin;
+
   if (allowedOrigins.indexOf(origin) > -1) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   }
