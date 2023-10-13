@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { TrylinksService } from '../trylinks.service';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import * as io from 'socket.io-client';
 import { LoadingDialogComponent } from '../loading-dialog/loading-dialog.component';
 

@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 import { TrylinksService } from '../trylinks.service';
 import { Router } from '@angular/router';
-import { MatDialogRef, MatDialog } from '@angular/material';
+import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 
 export const passwordMatch: ValidatorFn = (
   control: FormGroup

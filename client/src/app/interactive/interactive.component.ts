@@ -3,7 +3,7 @@ import { ShellLineModel, LineType } from '../shell-line/shell-line.model';
 import starterGuideDescriptions from './interactive.guide';
 import { TrylinksService } from '../trylinks.service';
 import { Router } from '@angular/router';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { LoadingDialogComponent } from '../loading-dialog/loading-dialog.component';
 import * as io from 'socket.io-client';
 
