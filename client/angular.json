@@ -141,7 +141,7 @@
   "defaultProject": "trylinks-v2",
   "schematics": {
     "@schematics/angular:component": {
-      "styleext": "scss"
+      "style": "scss"
     }
   }
 }
