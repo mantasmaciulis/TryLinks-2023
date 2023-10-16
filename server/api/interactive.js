@@ -13,6 +13,7 @@ function initInteractive (req, res, next) {
 
   const io = require('../sockets_base').io;
   const socketPath = '/' + req.session.user.username;
+  console.log(socketPath)
   const namespace = io.of(socketPath);
 
   namespace.on('connection', (socket) => {
@@ -38,7 +39,9 @@ function initInteractive (req, res, next) {
     socket.on('disconnect', () => {
       shell.kill();
       namespace.removeAllListeners();
-      delete io.nsps[socketPath];
+      if (io.nsps && io.nsps[socketPath]) {
+        delete io.nsps[socketPath];
+      }
     });
   });
 
