@@ -97,8 +97,9 @@ module.exports.compileLinksFile = function (req, res, next) {
     })
     socket.on('disconnect', function () {
       killLinksProc(username)
-      delete io.nsps[socketPath]
-      // console.log('deleted current namespace ' + socketPath)
+      if (io.nsps && io.nsps[socketPath]) {
+        delete io.nsps[socketPath];
+      }
     })
 
     socket.on('error', function (err) {
