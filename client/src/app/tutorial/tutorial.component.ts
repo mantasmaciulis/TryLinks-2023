@@ -3,8 +3,10 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { TrylinksService } from '../trylinks.service';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import * as io from 'socket.io-client';
+import io from 'socket.io-client';
+import { Socket } from 'socket.io-client'; 
 import { LoadingDialogComponent } from '../loading-dialog/loading-dialog.component';
+import { IconOptions } from '@angular/material/icon';
 
 @Component({
   selector: 'app-tutorial',
@@ -28,7 +30,7 @@ export class TutorialComponent implements OnInit {
   renderUrl: SafeHtml;
   id: number;
   headers: any[];
-  socket: SocketIOClient.Socket;
+  socket: Socket;
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -93,9 +95,9 @@ export class TutorialComponent implements OnInit {
             this.socket.emit('compile');
           } else {
             const namespace = TrylinksService.serverAddr + socketPath;
-            this.socket = io.connect(namespace);
+            this.socket = io(namespace);
 
-            this.socket.on('connect', _ => {
+            this.socket.on('connect', () => {
               this.socket.on('compiled', port => {
                 this.dialog.closeAll();
                 this.port = port;

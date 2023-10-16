@@ -5,7 +5,8 @@ import { TrylinksService } from '../trylinks.service';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { LoadingDialogComponent } from '../loading-dialog/loading-dialog.component';
-import * as io from 'socket.io-client';
+import io from 'socket.io-client';
+import { Socket } from 'socket.io-client';
 
 @Component({
   selector: 'app-interactive',
@@ -20,7 +21,7 @@ export class InteractiveComponent implements OnInit, AfterContentInit, OnDestroy
   currentCmd = '';
   currentInputLine = '';
   introIndex: number;
-  socket: SocketIOClient.Socket;
+  socket: Socket;
 
   constructor(
     private tryLinksService: TrylinksService,
@@ -46,10 +47,10 @@ export class InteractiveComponent implements OnInit, AfterContentInit, OnDestroy
         }
 
         const namespace = TrylinksService.serverAddr + socketPath;
-        this.socket = io.connect(namespace);
+        this.socket = io(namespace);
 
         this.socket.on('connect_error', (error) => console.log(error));
-        this.socket.on('connect', (_) => {
+        this.socket.on('connect', () => {
           this.introIndex = 0;
           this.socket.on('shell output', (output: string) => {
             if (this.dialog.openDialogs && this.dialog.openDialogs !== undefined && this.dialog.openDialogs.length > 0) {
