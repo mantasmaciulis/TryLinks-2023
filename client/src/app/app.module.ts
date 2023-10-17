@@ -35,47 +35,46 @@ import { TutorialComponent } from './tutorial/tutorial.component';
 import { LoadingDialogComponent } from './loading-dialog/loading-dialog.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    WelcomeComponent,
-    StartComponent,
-    SignInComponent,
-    SignUpComponent,
-    DashboardComponent,
-    InteractiveComponent,
-    ShellLineComponent,
-    TutorialComponent,
-    SignUpSuccessDialogComponent,
-    LoadingDialogComponent
-  ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    CodemirrorModule,
-    FormsModule,
-    HttpClientModule,
-    HttpClientXsrfModule.withOptions({
-      cookieName: 'connect.sid',
-    }),
-    MarkdownToHtmlModule,
-    MatCardModule,
-    MatButtonModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatListModule,
-    MatIconModule,
-    MatInputModule,
-    MatSidenavModule,
-    MatProgressSpinnerModule,
-    MatTabsModule,
-    MatToolbarModule,
-    MatTooltipModule,
-    ReactiveFormsModule,
-    WebStorageModule,
-    AppRoutingModule
-  ],
-  entryComponents: [SignUpSuccessDialogComponent, LoadingDialogComponent],
-  providers: [],
-  bootstrap: [AppComponent]
+    declarations: [
+        AppComponent,
+        WelcomeComponent,
+        StartComponent,
+        SignInComponent,
+        SignUpComponent,
+        DashboardComponent,
+        InteractiveComponent,
+        ShellLineComponent,
+        TutorialComponent,
+        SignUpSuccessDialogComponent,
+        LoadingDialogComponent
+    ],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        CodemirrorModule,
+        FormsModule,
+        HttpClientModule,
+        HttpClientXsrfModule.withOptions({
+            cookieName: 'connect.sid',
+        }),
+        MarkdownToHtmlModule,
+        MatCardModule,
+        MatButtonModule,
+        MatDialogModule,
+        MatFormFieldModule,
+        MatListModule,
+        MatIconModule,
+        MatInputModule,
+        MatSidenavModule,
+        MatProgressSpinnerModule,
+        MatTabsModule,
+        MatToolbarModule,
+        MatTooltipModule,
+        ReactiveFormsModule,
+        WebStorageModule,
+        AppRoutingModule
+    ],
+    providers: [],
+    bootstrap: [AppComponent]
 })
 export class AppModule {}
