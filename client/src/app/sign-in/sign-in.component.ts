@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TrylinksService } from '../trylinks.service';
 import {
-  FormBuilder,
+  UntypedFormBuilder,
   Validators
 } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -21,7 +21,7 @@ export class SignInComponent implements OnInit {
   signInLoading = false;
   signInFailed = false;
 
-  constructor(private fb: FormBuilder, private router: Router, private tryLinksService: TrylinksService) {}
+  constructor(private fb: UntypedFormBuilder, private router: Router, private tryLinksService: TrylinksService) {}
 
   ngOnInit() {
   }

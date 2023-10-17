@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  FormBuilder,
+  UntypedFormBuilder,
   Validators,
   ValidatorFn,
-  FormGroup,
+  UntypedFormGroup,
   ValidationErrors
 } from '@angular/forms';
 import { TrylinksService } from '../trylinks.service';
@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 
 export const passwordMatch: ValidatorFn = (
-  control: FormGroup
+  control: UntypedFormGroup
 ): ValidationErrors | null => {
   const password = control.get('password');
   const confirmPassword = control.get('confirmPassword');
@@ -57,7 +57,7 @@ export class SignUpComponent implements OnInit {
   signUpLoading = false;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private tryLinksService: TrylinksService,
     public dialog: MatDialog
   ) {}
