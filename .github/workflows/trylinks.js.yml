@@ -1,10 +1,11 @@
 name: trylinks.js CI
 
 on:
+  workflow_dispatch:
   push:
-    branches: [master]
+    branches: [feat/implement-pipeline]
   pull_request:
-    branches: [master]
+    branches: [feat/implement-pipeline]
 
 jobs:
   build:
