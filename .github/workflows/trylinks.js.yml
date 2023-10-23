@@ -1,0 +1,35 @@
+name: trylinks.js CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    strategy:
+      matrix:
+        node-version: [18.18.1]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{matrix.node-version}}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Install and build client
+      run: |
+        cd client
+        npm i
+        npm run build
+    - name: Install server dependencies
+      run: |
+        cd server
+        npm i
+    - name: Start server
+      run: |
+        cd server
+        npm start
