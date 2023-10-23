@@ -12,12 +12,10 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatLegacyTooltipModule as MatTooltipModule} from '@angular/material/legacy-tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {MarkdownToHtmlModule} from 'markdown-to-html-pipe';
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/markdown/markdown';
 import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
-import { WebStorageModule } from 'ngx-store';
 import {MatLegacyDialogModule as MatDialogModule} from '@angular/material/legacy-dialog';
 
 
@@ -57,7 +55,6 @@ import { LoadingDialogComponent } from './loading-dialog/loading-dialog.componen
         HttpClientXsrfModule.withOptions({
             cookieName: 'connect.sid',
         }),
-        MarkdownToHtmlModule,
         MatCardModule,
         MatButtonModule,
         MatDialogModule,
@@ -71,7 +68,6 @@ import { LoadingDialogComponent } from './loading-dialog/loading-dialog.componen
         MatToolbarModule,
         MatTooltipModule,
         ReactiveFormsModule,
-        WebStorageModule,
         AppRoutingModule
     ],
     providers: [],
