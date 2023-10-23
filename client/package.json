@@ -25,7 +25,6 @@
     "@ctrl/ngx-codemirror": "^7.0.0",
     "codemirror": "^5.46.0",
     "core-js": "^2.5.4",
-    "markdown-to-html-pipe": "^1.2.5",
     "ngx-store": "^3.1.1",
     "rxjs": "~6.6.7",
     "sass": "^1.68.0",
