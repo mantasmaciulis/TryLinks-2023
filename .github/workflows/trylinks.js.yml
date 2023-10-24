@@ -31,16 +31,11 @@ jobs:
       run: |
         cd server
         npm i
-    - name: Start server
-      run: |
-        cd server
-        npm start
-      env:
-        DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
-        SECRET: ${{ secrets.SECRET }}
-        TRYLINKS_CONFIG: ${{ secrets.TRYLINKS_CONFIG }}
-        PROD_DOMAIN: ${{ secrets.PROD_DOMAIN }}
-        COMPILE_WAIT_TIME: ${{ secrets.COMPILE_WAIT_TIME }}
-        HOST: ${{ secrets.HOST }}
-        NODE_ENV: ${{ secrets.NODE_ENV }}
-        PORT: ${{ secrets.PORT }}
+    - name: Stop previous server instance
+      run: pm2 stop 0
+    - name: Start server with PM2
+      run: pm2 start 0
+    - name: Save PM2 configuration
+      run: pm2 save
+    - name: Restart Nginx
+      run: sudo service nginx restart
