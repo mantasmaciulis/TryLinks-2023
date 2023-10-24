@@ -34,3 +34,12 @@ jobs:
       run: |
         cd server
         npm start
+      env:
+        DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
+        SECRET: ${{ secrets.SECRET }}
+        TRYLINKS_CONFIG: ${{ secrets.TRYLINKS_CONFIG }}
+        PROD_DOMAIN: ${{ secrets.PROD_DOMAIN }}
+        COMPILE_WAIT_TIME: ${{ secrets.COMPILE_WAIT_TIME }}
+        HOST: ${{ secrets.HOST }}
+        NODE_ENV: ${{ secrets.NODE_ENV }}
+        PORT: ${{ secrets.PORT }}
