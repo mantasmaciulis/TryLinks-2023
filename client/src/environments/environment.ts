@@ -4,8 +4,7 @@
 
 export const environment = {
   production: false,
-  serviceUrl: 'http://0.0.0.0',
-  port:5001
+  serviceUrl: 'http://0.0.0.0:5001',
 };
 
 /*
