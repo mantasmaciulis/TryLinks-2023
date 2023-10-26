@@ -1,4 +1,4 @@
 export const environment = {
     production: false,
-    serviceUrl: 'http://188.166.148.17',
+    serviceUrl: 'http://trylinks.net', //todo: this must be changed to dev.trylinks.net when it is setup.
   };
