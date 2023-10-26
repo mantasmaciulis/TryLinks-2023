@@ -25,6 +25,10 @@ jobs:
       HOST: ${{ secrets.HOST }}
       NODE_ENV: ${{ vars.NODE_ENV }}
       PORT: ${{ secrets.PORT }}
+      PROD_ORIGIN: ${{secrets.PROD_ORIGIN}}
+      LOCAL_ORIGIN: ${{secrets.LOCAL_ORIGIN}}
+      DEV_ORIGIN: ${{secrets.DEV_ORIGIN}}
+
 
     steps:
     - uses: actions/checkout@v2
