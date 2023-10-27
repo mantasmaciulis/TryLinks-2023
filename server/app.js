@@ -80,8 +80,8 @@ app.use(function (req, res, next) {
   next(err)
 })
 
-// var populate = require('./initial_tutorials/db-populate')
-// populate.populateDB();
+var populate = require('./initial_tutorials/db-populate')
+populate.populateDB();
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
