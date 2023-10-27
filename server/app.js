@@ -41,8 +41,6 @@ app.use(function (req, res, next) {
   var origin = req.headers.origin;
 
   // Log the origin and allowed origins for each request
-  console.log('Origin:', origin);
-  console.log('Allowed Origins:', allowedOrigins);
   var allowedOrigins = process.env.PROD_DOMAIN;
   var origin = req.headers.origin;
 
@@ -80,8 +78,6 @@ app.use(function (req, res, next) {
   next(err)
 })
 
-var populate = require('./initial_tutorials/db-populate')
-populate.populateDB();
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
