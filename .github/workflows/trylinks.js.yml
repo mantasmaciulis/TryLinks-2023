@@ -29,13 +29,23 @@ jobs:
       LOCAL_ORIGIN: ${{secrets.LOCAL_ORIGIN}}
       DEV_ORIGIN: ${{secrets.DEV_ORIGIN}}
 
-
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{matrix.node-version}}
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
+    - name: Add linx to PATH
+      run: echo "/home/testuser/.opam/4.08.0/bin" >> $GITHUB_PATH
+    - name: Add linx to PATH and reload .bashrc
+      run: |
+          echo "export PATH=$PATH:/home/testuser/.opam/4.08.0/bin" >> ~/.bashrc
+          source ~/.bashrc
+    - name: Check linx location
+      run: ls /home/testuser/.opam/4.08.0/bin
+    - name: Test linx command
+      run: |
+        linx --version
     - name: Install and build client
       run: |
         cd client
