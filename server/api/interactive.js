@@ -12,8 +12,7 @@ function initInteractive (req, res, next) {
   }
 
   const io = require('../sockets_base').io;
-  const socketPath = '/' + req.session.user.username;
-  console.log(socketPath)
+  const socketPath = '/api/websocket/' + req.session.user.username;
   const namespace = io.of(socketPath);
 
   namespace.on('connection', (socket) => {
