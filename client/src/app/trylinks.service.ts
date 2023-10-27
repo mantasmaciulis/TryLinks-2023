@@ -3,7 +3,6 @@ import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { environment } from '../environments/environment';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { SessionStorage, SessionStorageService } from 'ngx-store';
 
 @Injectable({
   providedIn: 'root'
@@ -11,14 +10,32 @@ import { SessionStorage, SessionStorageService } from 'ngx-store';
 export class TrylinksService {
   static headers = new HttpHeaders({ 'Content-Type': 'application/json' });
   static serverURL = environment.serviceUrl;
-  static serverAddr = TrylinksService.serverURL + ':5000';
-  @SessionStorage() username = 'unknown user';
-  @SessionStorage() lastTutorialId: number = null;
+  static serverAddr = TrylinksService.serverURL + ':' +environment.port;
 
-  constructor(
-    private http: HttpClient,
-    private sessionStorageService: SessionStorageService
-  ) {}
+  constructor(private http: HttpClient) {
+    if (!sessionStorage.getItem('username')) {
+      sessionStorage.setItem('username', 'unknown user');
+    }
+    if (!sessionStorage.getItem('lastTutorialId')) {
+      sessionStorage.setItem('lastTutorialId', null);
+    }
+  }
+
+  get username(): string {
+    return sessionStorage.getItem('username');
+  }
+
+  set username(value: string) {
+    sessionStorage.setItem('username', value);
+  }
+
+  get lastTutorialId(): number {
+    return +sessionStorage.getItem('lastTutorialId');
+  }
+
+  set lastTutorialId(value: number) {
+    sessionStorage.setItem('lastTutorialId', value.toString());
+  }
 
   signup(username: string, email: string, password: string) {
     return this.http
@@ -43,26 +60,23 @@ export class TrylinksService {
           console.log(error);
           return of(false);
         })
-      );
-  }
+      );}
 
   login(username: string, password: string): Observable<boolean> {
+    const loginData = {
+      username: username,
+      password: password
+    };
+  
     return this.http
-      .post(
-        TrylinksService.serverAddr + '/api/user/login',
-        {
-          username,
-          password
-        },
-        {
-          headers: TrylinksService.headers,
-          observe: 'response',
-          withCredentials: true
-        }
-      )
+      .post(TrylinksService.serverAddr + '/api/user/login', loginData, {
+        headers: TrylinksService.headers,
+        observe: 'response',
+        withCredentials: true
+      })
       .pipe(
         map((response: HttpResponse<any>) => {
-          if (response.status === 200) {
+          if (response.status === 200 && response.body.data) {
             this.username = username;
             this.lastTutorialId = response.body.data.last_tutorial;
           }
@@ -86,7 +100,7 @@ export class TrylinksService {
       .pipe(
         map((response: HttpResponse<any>) => {
           if (response.status === 200) {
-            this.sessionStorageService.clear('all'); // removes all session storage data
+            sessionStorage.clear(); // removes all session storage data
           }
           return response.status === 200;
         }),

@@ -38,27 +38,40 @@ function signUp (req, res, next) {
 function login (req, res, next) {
   const username = req.body.username
   const password = req.body.password
+  console.log(username)
+  console.log(password)
+  console.log("hmm")
 
   // Check if user exists.
   userDB.getUserByUsername(username)
     .then((user) => {
-      if (bcrypt.compareSync(password, user.password)) {
-        req.session.user = user
-        res.status(200)
-          .json({
-            status: 'success',
-            message: 'Login successful',
-            data: {
-              username: user.username,
-              last_tutorial: user.last_tutorial,
-              is_admin: user.is_admin
-            }
-          })
-      } else {
-        res.status(401)
+      try {
+        if (bcrypt.compareSync(password, user.password)) {
+          req.session.user = user
+          res.status(200)
+            .json({
+              status: 'success',
+              message: 'Login successful',
+              data: {
+                username: user.username,
+                last_tutorial: user.last_tutorial,
+                is_admin: user.is_admin
+              }
+            })
+        } else {
+          res.status(401)
+            .json({
+              status: 'error',
+              message: 'Incorrect login or password'
+            })
+        }
+      } catch (err) {
+        // Handle error from bcrypt.compareSync
+        console.error(err);
+        res.status(500)
           .json({
             status: 'error',
-            message: 'Incorrect login or password'
+            message: 'Internal server error'
           })
       }
     }).catch(() => {
