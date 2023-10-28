@@ -1,16 +1,16 @@
-name: trylinks.js CI
+name: trylinks-cicd-production.js CI
 
 on:
   workflow_dispatch:
   push:
     branches: [feat/deploy-and-implement-cicd]
   pull_request:
-    branches: [feat/deploy-and-implement-cicd]
+    branches: [feat/deploy-and-implement-cicds]
 
 jobs:
   build:
-    runs-on: dev
-    environment: develop
+    runs-on: prod
+    environment: production
 
     strategy:
       matrix:
@@ -20,14 +20,10 @@ jobs:
       DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
       SECRET: ${{ secrets.SECRET }}
       TRYLINKS_CONFIG: ${{ secrets.TRYLINKS_CONFIG }}
-      PROD_DOMAIN: ${{ secrets.PROD_DOMAIN }}
-      COMPILE_WAIT_TIME: ${{ secrets.COMPILE_WAIT_TIME }}
-      HOST: ${{ secrets.HOST }}
+      COMPILE_WAIT_TIME: ${{ vars.COMPILE_WAIT_TIME }}
+      HOST: ${{ vars.HOST }}
       NODE_ENV: ${{ vars.NODE_ENV }}
-      PORT: ${{ secrets.PORT }}
-      PROD_ORIGIN: ${{secrets.PROD_ORIGIN}}
-      LOCAL_ORIGIN: ${{secrets.LOCAL_ORIGIN}}
-      DEV_ORIGIN: ${{secrets.DEV_ORIGIN}}
+      PROD_ORIGIN: ${{vars.PROD_ORIGIN}}
 
     steps:
     - uses: actions/checkout@v2
