@@ -35,7 +35,7 @@
             "namedChunks": true
           },
           "configurations": {
-            "production": {
+            "prod": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -88,8 +88,8 @@
             "dev": {
               "browserTarget": "trylinks-v2:build:dev"
             },
-            "production": {
-              "browserTarget": "trylinks-v2:build:production"
+            "prod": {
+              "browserTarget": "trylinks-v2:build:prod"
             }
           }
         },
@@ -130,8 +130,8 @@
             "devServerTarget": "trylinks-v2:serve"
           },
           "configurations": {
-            "production": {
-              "devServerTarget": "trylinks-v2:serve:production"
+            "prod": {
+              "devServerTarget": "trylinks-v2:serve:prod"
             }
           }
         }
