@@ -1,4 +1,5 @@
 export const environment = {
   production: false,
-  serviceUrl: 'http://trylinks.net'
+  serviceUrl: 'http://trylinks.net',
+  envName: ""
 };

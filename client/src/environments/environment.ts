@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   serviceUrl: 'http://0.0.0.0:5001',
+  envName: ""
 };
 
 /*
