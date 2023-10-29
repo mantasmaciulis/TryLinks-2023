@@ -3,9 +3,9 @@ name: trylinks-cicd-develop.js CI
 on:
   workflow_dispatch:
   push:
-    branches: [feat/deploy-and-implement-cicd]
+    branches: [develop]
   pull_request:
-    branches: [feat/deploy-and-implement-cicd]
+    branches: [develop]
 
 jobs:
   build:
