@@ -102,7 +102,7 @@ export class TutorialComponent implements OnInit {
                 this.dialog.closeAll();
                 this.port = port;
                 this.renderUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-                  TrylinksService.serverURL + `:${port}`
+                  TrylinksService.serverAddr + `:${port}`
                 );
               });
 
@@ -115,7 +115,7 @@ export class TutorialComponent implements OnInit {
                 this.compileError = error;
                 this.port = null;
               });
-
+              
               this.socket.emit('compile');
             });
           }

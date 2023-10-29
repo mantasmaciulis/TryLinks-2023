@@ -9,8 +9,7 @@ import { catchError, map } from 'rxjs/operators';
 })
 export class TrylinksService {
   static headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-  static serverURL = environment.serviceUrl;
-  static serverAddr = TrylinksService.serverURL + ':' +environment.port;
+  static serverAddr = environment.serviceUrl;
 
   constructor(private http: HttpClient) {
     if (!sessionStorage.getItem('username')) {
