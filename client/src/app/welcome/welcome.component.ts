@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-welcome',
@@ -7,8 +8,10 @@ import { Router } from '@angular/router';
   styleUrls: ['./welcome.component.scss']
 })
 export class WelcomeComponent implements OnInit {
-
-  constructor(private router: Router) { }
+  envName: string;
+  constructor(private router: Router) {
+    this.envName = environment.envName || '';
+  }
 
   ngOnInit() {
   }

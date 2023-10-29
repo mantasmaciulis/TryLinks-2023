@@ -35,7 +35,7 @@
             "namedChunks": true
           },
           "configurations": {
-            "production": {
+            "prod": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -60,6 +60,21 @@
                   "maximumWarning": "6kb"
                 }
               ]
+            },
+            "dev": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev.ts"
+                }
+              ],
+              "optimization": false,
+              "outputHashing": "all",
+              "sourceMap": true,
+              "namedChunks": true,
+              "extractLicenses": false,
+              "vendorChunk": true,
+              "buildOptimizer": false
             }
           },
           "defaultConfiguration": ""
@@ -70,8 +85,11 @@
             "browserTarget": "trylinks-v2:build"
           },
           "configurations": {
-            "production": {
-              "browserTarget": "trylinks-v2:build:production"
+            "dev": {
+              "browserTarget": "trylinks-v2:build:dev"
+            },
+            "prod": {
+              "browserTarget": "trylinks-v2:build:prod"
             }
           }
         },
@@ -112,8 +130,8 @@
             "devServerTarget": "trylinks-v2:serve"
           },
           "configurations": {
-            "production": {
-              "devServerTarget": "trylinks-v2:serve:production"
+            "prod": {
+              "devServerTarget": "trylinks-v2:serve:prod"
             }
           }
         }

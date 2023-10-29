@@ -1,0 +1,52 @@
+name: trylinks-cicd-production.js CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: prod
+    environment: production
+
+    strategy:
+      matrix:
+        node-version: [18.18.1]
+
+    env:
+      DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
+      SECRET: ${{ secrets.SECRET }}
+      TRYLINKS_CONFIG: ${{ secrets.TRYLINKS_CONFIG }}
+      COMPILE_WAIT_TIME: ${{ vars.COMPILE_WAIT_TIME }}
+      HOST: ${{ vars.HOST }}
+      NODE_ENV: ${{ vars.NODE_ENV }}
+      PROD_ORIGIN: ${{vars.PROD_ORIGIN}}
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{matrix.node-version}}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Add linx to PATH
+      run: echo "/home/testuser/.opam/4.08.0/bin" >> $GITHUB_PATH
+    - name: Install and build client
+      run: |
+        cd client
+        npm i
+        npm run build -- --configuration ${{ env.NODE_ENV }}
+    - name: Install server dependencies
+      run: |
+        cd server
+        npm i
+    - name: Stop previous server instance
+      run: pm2 stop 0
+    - name: Start server with PM2
+      run: pm2 start 0 --update-env
+    - name: Save PM2 configuration
+      run: pm2 save
+    - name: Restart Nginx
+      run: sudo service nginx restart

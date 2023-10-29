@@ -15,7 +15,7 @@ var app = express()
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
-app.set('view engine', 'jade')
+app.set('view engine', 'pug')
 
 app.use(compression({ threshold: 0 }))
 // // create a write stream (in append mode)
@@ -41,8 +41,6 @@ app.use(function (req, res, next) {
   var origin = req.headers.origin;
 
   // Log the origin and allowed origins for each request
-  console.log('Origin:', origin);
-  console.log('Allowed Origins:', allowedOrigins);
   var allowedOrigins = process.env.PROD_DOMAIN;
   var origin = req.headers.origin;
 
@@ -80,8 +78,6 @@ app.use(function (req, res, next) {
   next(err)
 })
 
-// var populate = require('./initial_tutorials/db-populate')
-// populate.populateDB();
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
