@@ -43,7 +43,9 @@ jobs:
         cd server
         npm i
     - name: quicktest
-      run: npm start
+      run: |
+        cd server
+        npm start
     - name: Stop previous server instance
       run: pm2 stop 0
     - name: Start server with PM2
