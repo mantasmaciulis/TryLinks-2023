@@ -15,6 +15,8 @@ var host = process.env.HOST;
 
 var port = normalizePort(process.env.PORT || '5000');
 app.set('port', port);
+console.log(`Server is getting ready to run on port ${port}`);
+
 
 /**
  * Create HTTP server.
