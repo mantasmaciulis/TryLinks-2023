@@ -26,7 +26,6 @@ jobs:
       PROD_ORIGIN: ${{vars.PROD_ORIGIN}}
       PROD_DOMAIN: ${{vars.PROD_ORIGIN}}
 
-
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{matrix.node-version}}
