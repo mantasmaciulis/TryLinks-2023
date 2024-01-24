@@ -24,6 +24,8 @@ jobs:
       HOST: ${{ vars.HOST }}
       NODE_ENV: ${{ vars.NODE_ENV }}
       PROD_ORIGIN: ${{vars.PROD_ORIGIN}}
+      PROD_DOMAIN: ${{vars.PROD_ORIGIN}}
+
 
     steps:
     - uses: actions/checkout@v2
