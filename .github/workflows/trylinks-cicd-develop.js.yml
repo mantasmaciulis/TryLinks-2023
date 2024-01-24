@@ -1,11 +1,11 @@
 name: trylinks-cicd-develop.js CI
 
 on:
-  workflow_dispatch:
-  push:
-    branches: [develop]
-  pull_request:
-    branches: [develop]
+  # workflow_dispatch:
+  # push:
+  #   branches: [develop]
+  # pull_request:
+  #   branches: [develop]
 
 jobs:
   build:
@@ -26,7 +26,6 @@ jobs:
       PROD_ORIGIN: ${{vars.PROD_ORIGIN}}
       PROD_DOMAIN: ${{vars.PROD_ORIGIN}}
 
-
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{matrix.node-version}}
@@ -35,10 +34,17 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: Add linx to PATH
       run: echo "/home/testuser/.opam/4.08.0/bin" >> $GITHUB_PATH
-    - name: Install and build client
+    - name: Install client dependencies
       run: |
         cd client
         npm i
+    - name: Run Angular Tests
+      run: |
+        cd client
+        npm test -- --watch=false --browsers=ChromeHeadless
+    - name: Build client
+      run: |
+        cd client
         npm run build -- --configuration ${{ env.NODE_ENV }}
     - name: Install server dependencies
       run: |
