@@ -7,6 +7,7 @@ on:
   # pull_request:
   #   branches: [develop]
 
+
 jobs:
   build:
     runs-on: dev
@@ -25,6 +26,7 @@ jobs:
       NODE_ENV: ${{ vars.NODE_ENV }}
       PROD_ORIGIN: ${{vars.PROD_ORIGIN}}
       PROD_DOMAIN: ${{vars.PROD_ORIGIN}}
+
 
     steps:
     - uses: actions/checkout@v2
@@ -45,6 +47,7 @@ jobs:
     - name: Build client
       run: |
         cd client
+
         npm run build -- --configuration ${{ env.NODE_ENV }}
     - name: Install server dependencies
       run: |
