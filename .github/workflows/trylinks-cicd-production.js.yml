@@ -20,6 +20,8 @@ jobs:
       DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
       SECRET: ${{ secrets.SECRET }}
       TRYLINKS_CONFIG: ${{ secrets.TRYLINKS_CONFIG }}
+      USERNAME: ${{ secrets.USERNAME }}
+      PASSWORD: ${{ secrets.PASSWORD }}
       COMPILE_WAIT_TIME: ${{ vars.COMPILE_WAIT_TIME }}
       HOST: ${{ vars.HOST }}
       NODE_ENV: ${{ vars.NODE_ENV }}
@@ -59,3 +61,7 @@ jobs:
       run: pm2 save
     - name: Restart Nginx
       run: sudo service nginx restart
+    - name: Run e2e tests
+      run: |
+        cd e2e_tests
+        npx cypress run
