@@ -16,6 +16,7 @@ describe('Dashboard Tests', function() {
     cy.url().should('eq', 'http://trylinks.net/interactive');
     // Wait for 2 seconds for links shell to load.
     cy.wait(2000);
+
     //First Introduction  test
     cy.get('.mat-input-element').should('be.visible').type('52;{enter}');
     cy.contains('pre', '52 : Int').should('exist');
@@ -143,5 +144,6 @@ it('should receive evaluated code within 2s', function() {
   performTest('[1, 4, 9, 16];', '[1, 4, 9, 16] : [Int]');
   performTest('next tip;', '[3 / 12] You can concatenate 2 lists by using ++. Try [1, 2] ++ [3, 4, 5];.');
 });
+
 
 });
