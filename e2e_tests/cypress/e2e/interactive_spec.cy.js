@@ -15,7 +15,8 @@ describe('Dashboard Tests', function() {
     cy.get('button:contains("Launch Links Interactive Mode")').click();
     cy.url().should('eq', 'http://trylinks.net/interactive');
     // Wait for 2 seconds for links shell to load.
-    cy.wait(2);
+    cy.wait(2000);
+
     //First Introduction  test
     cy.get('.mat-input-element').should('be.visible').type('52;{enter}');
     cy.contains('pre', '52 : Int').should('exist');
@@ -113,4 +114,36 @@ describe('Dashboard Tests', function() {
     cy.get('.mat-input-element').should('be.visible').type('next tip;{enter}');
     cy.contains('pre', '[12 / 12] That\'s it! You have learned the basic syntax of Links!').should('exist');
   });
+
+it('should receive evaluated code within 2s', function() {
+  //Visit interactive mode
+  cy.get('button:contains("Launch Links Interactive Mode")').click();
+  cy.url().should('eq', 'http://trylinks.net/interactive');
+  // Wait for 2 seconds for links shell to load.
+  cy.wait(2000);
+
+  // Function to perform a test with performance check
+  const performTest = (input, expectedOutput, expectedTime = 2000) => {
+    let startTime;
+    cy.get('.mat-input-element').should('be.visible').then(() => {
+        startTime = performance.now();
+    }).type(`${input}{enter}`);
+
+    cy.contains('pre', expectedOutput).should('exist').then(() => {
+        const endTime = performance.now();
+        expect(endTime - startTime).to.be.lessThan(expectedTime);
+    });
+};
+
+  performTest('52;', '52 : Int');
+  performTest('next tip;', '[1 / 12] Now let\'s try something a bit more interesting! type 1 + 2 * 4; or any integer arithmetic expression and see its result.');
+
+  performTest('1 + 2 * 4;', '9 : Int');
+  performTest('next tip;', '[2 / 12] Instead of playing with numbers individually, try type [1, 4, 9, 16]; and see what comes out. List!');
+
+  performTest('[1, 4, 9, 16];', '[1, 4, 9, 16] : [Int]');
+  performTest('next tip;', '[3 / 12] You can concatenate 2 lists by using ++. Try [1, 2] ++ [3, 4, 5];.');
+});
+
+
 });
