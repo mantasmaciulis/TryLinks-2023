@@ -64,4 +64,5 @@ jobs:
     - name: Run e2e tests
       run: |
         cd e2e_tests
+        npm i
         npx cypress run
