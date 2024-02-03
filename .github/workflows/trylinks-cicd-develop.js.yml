@@ -19,7 +19,6 @@ jobs:
 
     env:
       DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
-      SECRET: ${{ secrets.SECRET }}
       TRYLINKS_CONFIG: ${{ secrets.TRYLINKS_CONFIG }}
       USERNAME: ${{ secrets.USERNAME }}
       PASSWORD: ${{ secrets.PASSWORD }}
