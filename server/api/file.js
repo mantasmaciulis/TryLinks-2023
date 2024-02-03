@@ -1,16 +1,6 @@
 var fileDB = require('../db/file-queries')
 
 function readFile (req, res, next) {
-  // Check cookie first.
-  if (!req.session.user) {
-    res.status(401)
-      .json({
-        status: 'error',
-        message: 'No authentication. Make sure you have logged in'
-      })
-    return
-  }
-
   const username = req.session.user.username
   const tutorial = parseInt(req.body.tutorial)
   if (isNaN(tutorial)) {
@@ -37,16 +27,6 @@ function readFile (req, res, next) {
 }
 
 function writeFile (req, res, next) {
-  // Check cookie first.
-  if (!req.session.user) {
-    res.status(401)
-      .json({
-        status: 'error',
-        message: 'No authentication. Make sure you have logged in'
-      })
-    return
-  }
-
   const username = req.session.user.username
   const tutorial = parseInt(req.body.tutorial)
   const fileData = req.body.fileData

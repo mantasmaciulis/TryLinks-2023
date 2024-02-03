@@ -50,15 +50,6 @@ function sleep (milliseconds) {
 }
 
 module.exports.compileLinksFile = function (req, res, next) {
-  if (!req.session.user) {
-    res.status(401)
-      .json({
-        status: 'error',
-        message: 'No authentication. Make sure you have logged in'
-      })
-    return
-  }
-
   const username = req.session.user.username
   const tutorialId = req.session.user.last_tutorial
   var io = require('../sockets_base').io

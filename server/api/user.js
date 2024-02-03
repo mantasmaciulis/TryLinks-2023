@@ -84,14 +84,6 @@ function login (req, res, next) {
 }
 
 function update (req, res, next) {
-  if (!req.session.user) {
-    res.status(401)
-      .json({
-        status: 'error',
-        message: 'No authentication. Make sure you have logged in'
-      })
-    return
-  }
 
   const username = req.session.user.username
   // Check if user exists.

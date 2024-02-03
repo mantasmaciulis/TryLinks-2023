@@ -1,14 +1,6 @@
 // Check if the user is logged-in
 function isLoggedIn (req, res) {
-  // Check if the user is logged in
-  if (!req.session.user) {
-    res.status(401)
-      .json({
-        status: 'error',
-        message: 'Creation of a new tutorial requires to be logged-in.'
-      })
-    return false
-  }
+
   return true
 }
 
