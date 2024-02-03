@@ -49,37 +49,62 @@ import { environment } from 'src/environments/environment.prod';
     ],
     imports: [
         BrowserModule,
-    AuthModule.forRoot({
-      domain: environment.auth.domain,
-      clientId: environment.auth.clientId,
-      cacheLocation: 'localstorage',
-      useRefreshTokens: true,
-      authorizationParams: {
-        redirect_uri: environment.auth.redirectUri,
-        audience: environment.auth.jwt_check_audiance
-      },
-      httpInterceptor: {
-        allowedList: [
-        `${environment.serviceUrl}/api/interactive`,
-        `${environment.serviceUrl}/api/user`,
-        `${environment.serviceUrl}/api/file`,
-        `${environment.serviceUrl}/api/compile`,
-        `${environment.serviceUrl}/api/tutorial`,
-        `${environment.serviceUrl}/api/user/update`,
-        `${environment.serviceUrl}/api/file/read`,
-        `${environment.serviceUrl}/api/file/write`,
-        `${environment.serviceUrl}/api/initInteractive`,
-        `${environment.serviceUrl}/api/compile`,
-        `${environment.serviceUrl}/api/tutorial/create`,
-        `${environment.serviceUrl}/api/tutorial/update`,
-        `${environment.serviceUrl}/api/tutorial/delete`,
-        `${environment.serviceUrl}/api/tutorial/desscription`,
-        `${environment.serviceUrl}/api/tutorial/headers`,
-        `${environment.serviceUrl}/api/tutorial/defaultId`,
-        `${environment.serviceUrl}/api/tutorial/:id`,
-    ],
-      },
-    }),
+        AuthModule.forRoot({
+            // The domain and clientId were configured in the previous chapter
+            domain: environment.auth.domain,
+            clientId: environment.auth.clientId,
+          
+            cacheLocation: 'localstorage',
+
+          
+            authorizationParams: {
+                redirect_uri: environment.auth.redirectUri,
+              
+              // Request this audience at user authentication time
+              audience: 'https://dev-z05qagcuczzy4gdp.us.auth0.com/api/v2/',
+          
+              // Request this scope at user authentication time
+              scope: 'read:current_user',
+            },
+          
+            // Specify configuration for the interceptor              
+            httpInterceptor: {
+              allowedList: [
+                {
+                  // Match any request that starts 'https://dev-z05qagcuczzy4gdp.us.auth0.com/api/v2/' (note the asterisk)
+                  uri: 'https://dev.trylinks.net/api/*',
+                  tokenOptions: {
+                    authorizationParams: {
+                      // The attached token should target this audience
+                      audience: environment.auth.jwt_check_audiance,
+          
+                      // The attached token should have these scopes
+                      scope: 'read:current_user'
+                    }
+                  }
+                }
+              ]
+            }
+          }),
+    // AuthModule.forRoot({
+    //   domain: environment.auth.domain,
+    //   clientId: environment.auth.clientId,
+    //   cacheLocation: 'localstorage',
+    //   useRefreshTokens: true,
+    //   authorizationParams: {
+    //     redirect_uri: environment.auth.redirectUri,
+    //     audience: environment.auth.jwt_check_audiance
+    //   },
+    //   httpInterceptor: {
+    //     authorizationParams: {
+    //         redirect_uri: environment.auth.redirectUri,
+    //         audience: environment.auth.jwt_check_audiance
+    //       },
+    //     allowedList: [
+    //     'https://dev.trylinks.net/api/*',
+    // ],
+    //   },
+    // }),
         BrowserAnimationsModule,
         CodemirrorModule,
         FormsModule,
