@@ -8,23 +8,26 @@ var compression = require('compression')
 var fs = require('fs')
 const { auth } = require('express-oauth2-jwt-bearer');
 require('dotenv').config()
-console.log(`SECRET: ${process.env.SECRET}`);
-console.log(`SECRET: ${process.env.SECRET}`);
-console.log(`SECRET: ${process.env.SECRET}`);
-console.log(`SECRET: ${process.env.SECRET}`);
-console.log(`SECRET: ${process.env.SECRET}`);
-console.log(`SECRET: ${process.env.SECRET}`);
-console.log(`SECRET: ${process.env.SECRET}`);
-console.log(`SECRET: ${process.env.SECRET}`);
 
 var index = require('./routes/index')
 
 var app = express()
 
+console.log(`Before setting to null, SECRET: ${process.env.SECRET}`);
+
+// Set to empty string
+process.env.SECRET = '';
+console.log(`After setting to empty string, SECRET: ${process.env.SECRET}`);
+
+// Or, to remove it entirely
+delete process.env.SECRET;
+console.log(`After deleting, SECRET: ${process.env.SECRET}`);
+
 const jwtCheck = auth({
   audience: 'https://dev.trylinks.net/api/',
   issuerBaseURL: 'https://dev-z05qagcuczzy4gdp.us.auth0.com/',
-  tokenSigningAlg: 'RS256'
+  tokenSigningAlg: 'RS256',
+  secret: null,
 });
 app.use(jwtCheck);
 
