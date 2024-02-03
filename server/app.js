@@ -14,9 +14,9 @@ var index = require('./routes/index')
 var app = express()
 
 const jwtCheck = auth({
-  audience: process.env.JWT_CHECK_AUDIENCE,
-  issuerBaseURL: process.env.JWT_AUTH_DOMAIN,
-  tokenSigningAlg: 'RS256',
+  audience: 'https://dev.trylinks.net/api/',
+  issuerBaseURL: 'https://dev-z05qagcuczzy4gdp.us.auth0.com/',
+  tokenSigningAlg: 'RS256'
 });
 app.use(jwtCheck);
 
