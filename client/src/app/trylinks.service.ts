@@ -20,96 +20,12 @@ export class TrylinksService {
     }
   }
 
-  get username(): string {
-    return sessionStorage.getItem('username');
-  }
-
-  set username(value: string) {
-    sessionStorage.setItem('username', value);
-  }
-
   get lastTutorialId(): number {
     return +sessionStorage.getItem('lastTutorialId');
   }
 
   set lastTutorialId(value: number) {
     sessionStorage.setItem('lastTutorialId', value.toString());
-  }
-
-  signup(username: string, email: string, password: string) {
-    return this.http
-      .post(
-        TrylinksService.serverAddr + '/api/user/signup',
-        {
-          username,
-          email,
-          password
-        },
-        {
-          headers: TrylinksService.headers,
-          withCredentials: true,
-          observe: 'response'
-        }
-      )
-      .pipe(
-        map((response: HttpResponse<any>) => {
-          return response.status === 200;
-        }),
-        catchError(error => {
-          console.log(`Signup API failed with the following detail:\n`);
-          console.log(error);
-          return of(false);
-        })
-      );}
-
-  login(username: string, password: string): Observable<boolean> {
-    const loginData = {
-      username: username,
-      password: password
-    };
-  
-    return this.http
-      .post(TrylinksService.serverAddr + '/api/user/login', loginData, {
-        headers: TrylinksService.headers,
-        observe: 'response',
-        withCredentials: true
-      })
-      .pipe(
-        map((response: HttpResponse<any>) => {
-          if (response.status === 200 && response.body.data) {
-            this.username = username;
-            this.lastTutorialId = response.body.data.last_tutorial;
-          }
-          return response.status === 200;
-        }),
-        catchError(error => {
-          console.log(`Login API failed with the following detail:\n`);
-          console.log(error);
-          return of(false);
-        })
-      );
-  }
-
-  logout(): Observable<boolean> {
-    return this.http
-      .get(TrylinksService.serverAddr + '/api/logout', {
-        headers: TrylinksService.headers,
-        observe: 'response',
-        withCredentials: true
-      })
-      .pipe(
-        map((response: HttpResponse<any>) => {
-          if (response.status === 200) {
-            sessionStorage.clear(); // removes all session storage data
-          }
-          return response.status === 200;
-        }),
-        catchError(error => {
-          console.log(`Login API failed with the following detail:\n`);
-          console.log(error);
-          return of(false);
-        })
-      );
   }
 
   startInteractiveMode(): Observable<string> {
