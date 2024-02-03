@@ -4,14 +4,21 @@ var favicon = require('serve-favicon')
 var logger = require('morgan')
 var cookieParser = require('cookie-parser')
 var bodyParser = require('body-parser')
-var session = require('express-session')
 var compression = require('compression')
 var fs = require('fs')
+const { auth } = require('express-oauth2-jwt-bearer');
 require('dotenv').config()
 
 var index = require('./routes/index')
 
 var app = express()
+
+const jwtCheck = auth({
+  audience: process.env.JWT_CHECK_AUDIENCE,
+  issuerBaseURL: process.env.JWT_AUTH_DOMAIN,
+  tokenSigningAlg: 'RS256'
+});
+app.use(jwtCheck);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
@@ -26,14 +33,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: 604800000 }))
-app.use(session({
-  secret: process.env.SECRET,
-  saveUninitialized: true,
-  resave: false,
-  cookie: { 
-    maxAge: 604800000
-  }
-}));
+
 
 
 app.use(function (req, res, next) {
