@@ -8,6 +8,14 @@ var compression = require('compression')
 var fs = require('fs')
 const { auth } = require('express-oauth2-jwt-bearer');
 require('dotenv').config()
+console.log(`SECRET: ${process.env.SECRET}`);
+console.log(`SECRET: ${process.env.SECRET}`);
+console.log(`SECRET: ${process.env.SECRET}`);
+console.log(`SECRET: ${process.env.SECRET}`);
+console.log(`SECRET: ${process.env.SECRET}`);
+console.log(`SECRET: ${process.env.SECRET}`);
+console.log(`SECRET: ${process.env.SECRET}`);
+console.log(`SECRET: ${process.env.SECRET}`);
 
 var index = require('./routes/index')
 
