@@ -29,8 +29,8 @@ jobs:
       PROD_ORIGIN: ${{vars.PROD_ORIGIN}}
       PROD_DOMAIN: ${{vars.PROD_ORIGIN}}
       AUTH_DOMAIN: ${{vars.AUTH_DOMAIN}}
-      PROD_AUTH_CLIENT_ID: ${{vars.PROD_AUTH_CLIENT_ID}}
-      PROD_AUTH_REDIRECT_URI: ${{vars.PROD_AUTH_REDIRECT_URI}}
+      AUTH_CLIENT_ID: ${{vars.AUTH_CLIENT_ID}}
+      AUTH_REDIRECT_URI: ${{vars.AUTH_REDIRECT_URI}}
 
 
     steps:
