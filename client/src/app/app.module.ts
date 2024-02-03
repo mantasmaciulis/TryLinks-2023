@@ -32,7 +32,7 @@ import { TutorialComponent } from './tutorial/tutorial.component';
 import { LoadingDialogComponent } from './loading-dialog/loading-dialog.component';
 import { LoginButtonComponent } from './buttons/login-button';
 import { LogoutButtonComponent } from './buttons/logout-button';
-import { environment } from 'src/environments/environment.prod';
+import { environment } from 'src/environments/environment';
 
 @NgModule({
     declarations: [
@@ -53,19 +53,20 @@ import { environment } from 'src/environments/environment.prod';
             domain: environment.auth.domain,
             clientId: environment.auth.clientId,
             cacheLocation: 'localstorage',
+            useRefreshTokens: true,
             authorizationParams: {
               redirect_uri: environment.auth.redirectUri,
               audience: environment.auth.jwt_check_audiance,
-              scope: 'read:current_user',
+              scope: 'openid read:current_user offline_access',
             },
                       httpInterceptor: {
               allowedList: [
                 {
-                  uri: 'https://dev.trylinks.net/api/*',
+                  uri: environment.serviceUrl + '/api/*',
                   tokenOptions: {
                     authorizationParams: {
                     audience: environment.auth.jwt_check_audiance,
-                    scope: 'read:current_user'
+                    scope: 'openid read:current_user offline_access'
                     }
                   }
                 }

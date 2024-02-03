@@ -4,10 +4,15 @@
 
 export const environment = {
   production: false,
-  serviceUrl: 'http://0.0.0.0:5001',
-  envName: ""
+  serviceUrl: 'https://dev.trylinks.net',
+  envName: "Dev",
+  auth: {
+    domain: '${AUTH_DOMAIN}',
+    clientId: '${AUTH_CLIENT_ID}',
+    redirectUri: '${AUTH_REDIRECT_URI}',
+    jwt_check_audiance: '${JWT_CHECK_AUDIENCE}'
+  },
 };
-
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
