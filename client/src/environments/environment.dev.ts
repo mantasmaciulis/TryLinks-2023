@@ -1,6 +1,6 @@
 export const environment = {
     production: false,
-    serviceUrl: 'http://dev.trylinks.net',
+    serviceUrl: 'https://dev.trylinks.net',
     envName: "Dev",
     auth: {
       domain: '${AUTH_DOMAIN}',
