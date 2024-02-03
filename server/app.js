@@ -13,10 +13,12 @@ var index = require('./routes/index')
 
 var app = express()
 
+delete process.env.SECRET;
 const jwtCheck = auth({
   audience: process.env.JWT_CHECK_AUDIENCE,
   issuerBaseURL: process.env.JWT_AUTH_DOMAIN,
-  tokenSigningAlg: 'RS256'
+  tokenSigningAlg: 'RS256',
+  secret: null,
 });
 app.use(jwtCheck);
 
