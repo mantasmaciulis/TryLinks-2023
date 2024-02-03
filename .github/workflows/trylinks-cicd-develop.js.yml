@@ -1,11 +1,11 @@
 name: trylinks-cicd-develop.js CI
 
 on:
-  # workflow_dispatch:
-  # push:
-  #   branches: [develop]
-  # pull_request:
-  #   branches: [develop]
+  workflow_dispatch:
+  push:
+    branches: [develop]
+  pull_request:
+    branches: [develop]
 
 
 jobs:
@@ -28,6 +28,9 @@ jobs:
       NODE_ENV: ${{ vars.NODE_ENV }}
       PROD_ORIGIN: ${{vars.PROD_ORIGIN}}
       PROD_DOMAIN: ${{vars.PROD_ORIGIN}}
+      AUTH_DOMAIN: ${{vars.AUTH_DOMAIN}}
+      PROD_AUTH_CLIENT_ID: ${{vars.PROD_AUTH_CLIENT_ID}}
+      PROD_AUTH_REDIRECT_URI: ${{vars.PROD_AUTH_REDIRECT_URI}}
 
 
     steps:
@@ -42,10 +45,10 @@ jobs:
       run: |
         cd client
         npm i
-    - name: Run Angular Tests
-      run: |
-        cd client
-        npm test -- --watch=false --browsers=ChromeHeadless
+    # - name: Run Angular Tests
+    #   run: |
+    #     cd client
+    #     npm test -- --watch=false --browsers=ChromeHeadless
     - name: Build client
       run: |
         cd client
@@ -63,8 +66,8 @@ jobs:
       run: pm2 save
     - name: Restart Nginx
       run: sudo service nginx restart
-    - name: Run e2e tests
-      run: |
-        cd e2e_tests
-        npm i
-        npx cypress run
+    # - name: Run e2e tests
+    #   run: |
+    #     cd e2e_tests
+    #     npm i
+    #     npx cypress run

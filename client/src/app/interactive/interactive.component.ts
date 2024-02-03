@@ -129,9 +129,4 @@ export class InteractiveComponent implements OnInit, AfterContentInit, OnDestroy
     this.router.navigate(['dashboard']);
   }
 
-  logout(): void {
-    this.tryLinksService
-      .logout()
-      .subscribe(_ => this.router.navigate(['welcome']));
-  }
 }

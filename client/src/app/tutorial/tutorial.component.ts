@@ -141,9 +141,4 @@ export class TutorialComponent implements OnInit {
     this.router.navigate(['interactive']);
   }
 
-  logout(): void {
-    this.tryLinksService
-      .logout()
-      .subscribe(_ => this.router.navigate(['welcome']));
-  }
 }

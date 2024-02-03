@@ -20,34 +20,44 @@ import {MatLegacyDialogModule as MatDialogModule} from '@angular/material/legacy
 
 
 import { AppRoutingModule } from './app-routing.module';
+import { AuthModule } from '@auth0/auth0-angular';
 import { AppComponent } from './app.component';
 import { WelcomeComponent } from './welcome/welcome.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StartComponent } from './start/start.component';
-import { SignInComponent } from './sign-in/sign-in.component';
-import { SignUpComponent, SignUpSuccessDialogComponent } from './sign-up/sign-up.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { InteractiveComponent } from './interactive/interactive.component';
 import { ShellLineComponent } from './shell-line/shell-line.component';
 import { TutorialComponent } from './tutorial/tutorial.component';
 import { LoadingDialogComponent } from './loading-dialog/loading-dialog.component';
+import { LoginButtonComponent } from './buttons/login-button';
+import { LogoutButtonComponent } from './buttons/logout-button';
+import { environment } from 'src/environments/environment.prod';
 
 @NgModule({
     declarations: [
         AppComponent,
         WelcomeComponent,
         StartComponent,
-        SignInComponent,
-        SignUpComponent,
         DashboardComponent,
         InteractiveComponent,
         ShellLineComponent,
         TutorialComponent,
-        SignUpSuccessDialogComponent,
-        LoadingDialogComponent
+        LoadingDialogComponent,
+        LoginButtonComponent,
+        LogoutButtonComponent        
     ],
     imports: [
         BrowserModule,
+    AuthModule.forRoot({
+      domain: environment.auth.domain,
+      clientId: environment.auth.clientId,
+      cacheLocation: 'localstorage',
+      useRefreshTokens: true,
+      authorizationParams: {
+        redirect_uri: environment.auth.redirectUri
+      }
+    }),
         BrowserAnimationsModule,
         CodemirrorModule,
         FormsModule,

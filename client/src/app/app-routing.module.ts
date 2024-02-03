@@ -6,6 +6,9 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { InteractiveComponent } from './interactive/interactive.component';
 import { TutorialComponent } from './tutorial/tutorial.component';
 
+import { AuthGuard } from '@auth0/auth0-angular';
+
+
 const routes: Routes = [
   {
     path: 'welcome',
@@ -13,24 +16,23 @@ const routes: Routes = [
     component: WelcomeComponent
   },
   {
-    path: 'start',
-    data: { title: 'TryLinks' },
-    component: StartComponent
-  },
-  {
     path: 'dashboard',
     data: { title: 'TryLinks Dashboard' },
-    component: DashboardComponent
+    component: DashboardComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: 'interactive',
     data: { title: 'TryLinks Interactive Mode' },
-    component: InteractiveComponent
+    component: InteractiveComponent,
+    canActivate: [AuthGuard],
+
   },
   {
     path: 'tutorial/:id',
     data: { title: 'TryLinks Tutorial Mode' },
-    component: TutorialComponent
+    component: TutorialComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: '**',

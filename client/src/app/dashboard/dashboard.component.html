@@ -2,10 +2,11 @@
   <img class="tl-logo" src="assets/logo.svg" alt="Links Logo">
   <div class="tl-header-name">TryLinks Dashboard</div>
   <div class="tl-expander"></div>
-  <button mat-button color="primary" class="tl-logout-button" (click)="logout()">Log out</button>
+  <app-logout-button></app-logout-button>
 </mat-toolbar>
 <div class="tl-dashboard-content">
-  <div class="tl-welcome-msg">Hello, {{username}}!</div>
+  <p>Welcome {{user}}</p>
+  
 
   <div class="tl-dashboard-nav">
     <mat-card class="tl-dashboard-interactive">
