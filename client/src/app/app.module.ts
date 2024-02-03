@@ -15,12 +15,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/markdown/markdown';
-import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
 import {MatLegacyDialogModule as MatDialogModule} from '@angular/material/legacy-dialog';
 
 
 import { AppRoutingModule } from './app-routing.module';
-import { AuthModule } from '@auth0/auth0-angular';
+import { AuthHttpInterceptor, AuthModule } from '@auth0/auth0-angular';
 import { AppComponent } from './app.component';
 import { WelcomeComponent } from './welcome/welcome.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -55,8 +55,30 @@ import { environment } from 'src/environments/environment.prod';
       cacheLocation: 'localstorage',
       useRefreshTokens: true,
       authorizationParams: {
-        redirect_uri: environment.auth.redirectUri
-      }
+        redirect_uri: environment.auth.redirectUri,
+        audience: environment.auth.jwt_check_audiance
+      },
+      httpInterceptor: {
+        allowedList: [
+        `${environment.auth.domain}/api/interactive`,
+        `${environment.auth.domain}/api/user`,
+        `${environment.auth.domain}/api/file`,
+        `${environment.auth.domain}/api/compile`,
+        `${environment.auth.domain}/api/tutorial`,
+        `${environment.auth.domain}/api/user/update`,
+        `${environment.auth.domain}/api/file/read`,
+        `${environment.auth.domain}/api/file/write`,
+        `${environment.auth.domain}/api/initInteractive`,
+        `${environment.auth.domain}/api/compile`,
+        `${environment.auth.domain}/api/tutorial/create`,
+        `${environment.auth.domain}/api/tutorial/update`,
+        `${environment.auth.domain}/api/tutorial/delete`,
+        `${environment.auth.domain}/api/tutorial/desscription`,
+        `${environment.auth.domain}/api/tutorial/headers`,
+        `${environment.auth.domain}/api/tutorial/defaultId`,
+        `${environment.auth.domain}/api/tutorial/:id`,
+    ],
+      },
     }),
         BrowserAnimationsModule,
         CodemirrorModule,
@@ -80,7 +102,13 @@ import { environment } from 'src/environments/environment.prod';
         ReactiveFormsModule,
         AppRoutingModule
     ],
-    providers: [],
+    providers: [
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AuthHttpInterceptor,
+            multi: true,
+        }
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule {}
