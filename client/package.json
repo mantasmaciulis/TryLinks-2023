@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "node env-config.js && ßng build",
+    "build": "node set-env.js && ng build",
     "test": "ng test --code-coverage",
     "lint": "ng lint",
     "e2e": "ng e2e"
