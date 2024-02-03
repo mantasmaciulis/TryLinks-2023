@@ -49,37 +49,29 @@ import { environment } from 'src/environments/environment.prod';
     ],
     imports: [
         BrowserModule,
-    AuthModule.forRoot({
-      domain: environment.auth.domain,
-      clientId: environment.auth.clientId,
-      cacheLocation: 'localstorage',
-      useRefreshTokens: true,
-      authorizationParams: {
-        redirect_uri: environment.auth.redirectUri,
-        audience: environment.auth.jwt_check_audiance
-      },
-      httpInterceptor: {
-        allowedList: [
-        `${environment.auth.domain}/api/interactive`,
-        `${environment.auth.domain}/api/user`,
-        `${environment.auth.domain}/api/file`,
-        `${environment.auth.domain}/api/compile`,
-        `${environment.auth.domain}/api/tutorial`,
-        `${environment.auth.domain}/api/user/update`,
-        `${environment.auth.domain}/api/file/read`,
-        `${environment.auth.domain}/api/file/write`,
-        `${environment.auth.domain}/api/initInteractive`,
-        `${environment.auth.domain}/api/compile`,
-        `${environment.auth.domain}/api/tutorial/create`,
-        `${environment.auth.domain}/api/tutorial/update`,
-        `${environment.auth.domain}/api/tutorial/delete`,
-        `${environment.auth.domain}/api/tutorial/desscription`,
-        `${environment.auth.domain}/api/tutorial/headers`,
-        `${environment.auth.domain}/api/tutorial/defaultId`,
-        `${environment.auth.domain}/api/tutorial/:id`,
-    ],
-      },
-    }),
+        AuthModule.forRoot({
+            domain: environment.auth.domain,
+            clientId: environment.auth.clientId,
+            cacheLocation: 'localstorage',
+            authorizationParams: {
+              redirect_uri: environment.auth.redirectUri,
+              audience: environment.auth.jwt_check_audiance,
+              scope: 'read:current_user',
+            },
+                      httpInterceptor: {
+              allowedList: [
+                {
+                  uri: 'https://dev.trylinks.net/api/*',
+                  tokenOptions: {
+                    authorizationParams: {
+                    audience: environment.auth.jwt_check_audiance,
+                    scope: 'read:current_user'
+                    }
+                  }
+                }
+              ]
+            }
+          }),
         BrowserAnimationsModule,
         CodemirrorModule,
         FormsModule,
