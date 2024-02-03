@@ -15,8 +15,7 @@ var app = express()
 
 const jwtCheck = auth({
   audience: process.env.JWT_CHECK_AUDIENCE,
-  issuerBaseURL: process.env.JWT_AUTH_DOMAIN,
-  tokenSigningAlg: 'RS256'
+  issuerBaseURL: process.env.JWT_AUTH_DOMAIN
 });
 app.use(jwtCheck);
 
