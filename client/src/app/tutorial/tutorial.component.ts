@@ -7,6 +7,7 @@ import io from 'socket.io-client';
 import { Socket } from 'socket.io-client'; 
 import { LoadingDialogComponent } from '../loading-dialog/loading-dialog.component';
 import { IconOptions } from '@angular/material/icon';
+import * as marked from 'marked';
 
 @Component({
   selector: 'app-tutorial',
@@ -15,7 +16,7 @@ import { IconOptions } from '@angular/material/icon';
 })
 export class TutorialComponent implements OnInit {
   // TODO(fix links styling in editor).
-  tutorialDescription = '';
+  tutorialDescription: SafeHtml;
   source = '';
   editorOptions = {
     mode: 'links',
@@ -50,7 +51,7 @@ export class TutorialComponent implements OnInit {
       this.id = (this.route.snapshot.paramMap.get('id') as unknown) as number;
       this.tryLinksService
         .getTutorialDesc(this.id)
-        .subscribe((description: string) => {
+        .subscribe(async (description: string) => {
           if (description.length === 0) {
             this.tryLinksService
               .getDefaultTutorialId()
@@ -59,8 +60,7 @@ export class TutorialComponent implements OnInit {
               });
             return;
           }
-
-          this.tutorialDescription = description;
+          await this.convertMarkdownToHtml(description);
           this.tryLinksService.getTutorialSource(this.id).subscribe(source => {
             if (source === '') {
               this.router.navigate(['dashboard']);
@@ -78,7 +78,11 @@ export class TutorialComponent implements OnInit {
         });
     });
   }
-
+  async convertMarkdownToHtml(description: string): Promise<void> {
+    const htmlContent = await marked.parse(description);
+    this.tutorialDescription = this.sanitizer.bypassSecurityTrustHtml(htmlContent);
+  }
+  
   onCompile(): void {
     this.dialog.open(LoadingDialogComponent);
     this.tryLinksService
@@ -102,7 +106,8 @@ export class TutorialComponent implements OnInit {
                 this.dialog.closeAll();
                 this.port = port;
                 this.renderUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-                  TrylinksService.serverAddr + `:${port}`
+                  //we use http for user compiled apps.
+                  TrylinksService.serverAddr.replace(/^https:/, 'http:') + `:${port}`
                 );
               });
 
