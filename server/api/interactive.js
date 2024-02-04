@@ -3,7 +3,6 @@ const forbiddenMessage = 'Error: \nYou cannot include "@" in the command, please
 
 function initInteractive (req, res, next) {
 
-  console.log(req.auth.payload.sub)
   const userID = req.auth.payload.sub;
   const io = require('../sockets_base').io;
   const socketPath = '/api/websocket/' + userID;

@@ -7,7 +7,6 @@ var compileAPI = require('../api/compile')
 
 var tutorialAPI = require('../api/tutorial')
 
-router.post('/api/user/signup', userAPI.signUp)
 router.post('/api/user/login', userAPI.login)
 router.post('/api/user/update', userAPI.update)
 router.post('/api/file/read', fileAPI.readFile)
