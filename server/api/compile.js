@@ -50,7 +50,7 @@ function sleep (milliseconds) {
 }
 
 module.exports.compileLinksFile = function (req, res, next) {
-  const username = req.session.user.username
+  const username = req.auth.payload.sub;
   const tutorialId = req.session.user.last_tutorial
   var io = require('../sockets_base').io
   var socketPath = `/${username}_tutorial`

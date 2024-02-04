@@ -1,7 +1,7 @@
 var fileDB = require('../db/file-queries')
 
 function readFile (req, res, next) {
-  const username = req.session.user.username
+  const username = req.auth.payload.sub;
   const tutorial = parseInt(req.body.tutorial)
   if (isNaN(tutorial)) {
     res.status(403).json({
@@ -27,7 +27,7 @@ function readFile (req, res, next) {
 }
 
 function writeFile (req, res, next) {
-  const username = req.session.user.username
+  const username = req.auth.payload.sub;
   const tutorial = parseInt(req.body.tutorial)
   const fileData = req.body.fileData
   if (isNaN(tutorial)) {
