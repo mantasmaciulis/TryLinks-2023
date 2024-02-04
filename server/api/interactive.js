@@ -2,8 +2,11 @@ const spawn = require('child_process').spawn
 const forbiddenMessage = 'Error: \nYou cannot include "@" in the command, please check and try again.\n'
 
 function initInteractive (req, res, next) {
+
+  console.log(req.auth.payload.sub)
+  const userID = req.auth.payload.sub;
   const io = require('../sockets_base').io;
-  const socketPath = '/api/websocket/' + req.session.user.username;
+  const socketPath = '/api/websocket/' + userID;
   const namespace = io.of(socketPath);
 
   namespace.on('connection', (socket) => {
