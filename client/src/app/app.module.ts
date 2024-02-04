@@ -57,7 +57,7 @@ import { environment } from 'src/environments/environment';
             authorizationParams: {
               redirect_uri: environment.auth.redirectUri,
               audience: environment.auth.jwt_check_audiance,
-              scope: 'openid read:current_user offline_access',
+              scope: 'openid read:current_user offline_access profile',
             },
                       httpInterceptor: {
               allowedList: [
@@ -66,7 +66,7 @@ import { environment } from 'src/environments/environment';
                   tokenOptions: {
                     authorizationParams: {
                     audience: environment.auth.jwt_check_audiance,
-                    scope: 'openid read:current_user offline_access'
+                    scope: 'openid read:current_user offline_access profile'
                     }
                   }
                 }
