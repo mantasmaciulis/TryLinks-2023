@@ -50,16 +50,7 @@ function sleep (milliseconds) {
 }
 
 module.exports.compileLinksFile = function (req, res, next) {
-  if (!req.session.user) {
-    res.status(401)
-      .json({
-        status: 'error',
-        message: 'No authentication. Make sure you have logged in'
-      })
-    return
-  }
-
-  const username = req.session.user.username
+  const username = req.auth.payload.sub;
   const tutorialId = req.session.user.last_tutorial
   var io = require('../sockets_base').io
   var socketPath = `/${username}_tutorial`
@@ -90,6 +81,7 @@ module.exports.compileLinksFile = function (req, res, next) {
           sleep(process.env.COMPILE_ENV_TIME)
 
           socket.emit('compiled', module.exports.port)
+          console.log('compiled', module.exports.port)
         }).catch(error => {
           console.log(error)
           socket.emit('compile error', 'could not build config and source files')

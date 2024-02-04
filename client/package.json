@@ -27,6 +27,7 @@
     "codemirror": "^5.46.0",
     "core-js": "^2.5.4",
     "dotenv": "^16.4.1",
+    "jsonwebtoken": "^9.0.2",
     "ngx-store": "^3.1.1",
     "rxjs": "~6.6.7",
     "sass": "^1.68.0",

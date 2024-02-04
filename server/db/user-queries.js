@@ -5,23 +5,20 @@ var db = require('./db-connect')
  * All DB actions for LinksUser.
  */
 
-function getUserByUsername (username) {
-  return db.one('select * from "LinksUser" where "username" = $1', username)
-}
+function getUserByUsername(username) {
+    return db.one('SELECT * FROM "LinksUser" WHERE "username" = $1', [username])
+  }
+  
 
-function createUser (username, email, password) {
-  return db.none('insert into "LinksUser"("username", "email", "password", "last_tutorial")' +
-        'values($1, $2, $3, 1)', [username, email, password])
+
+
+function createUser (username) {
+  return db.none('insert into "LinksUser"("username", "last_tutorial")' +
+        'values($1, 1)', [username])
 }
 
 function updateUser (username, update) {
   var changeDetails = []
-  if (update.email != null && update.email !== undefined) {
-    changeDetails.push('"email"=\'' + update.email + '\'')
-  }
-  if (update.password != null && update.password !== undefined) {
-    changeDetails.push('"password"=\'' + update.password + '\'')
-  }
   const lastTutorial = parseInt(update.last_tutorial)
   if (lastTutorial != null && lastTutorial !== undefined && !isNaN(lastTutorial)) {
     changeDetails.push('"last_tutorial"=' + lastTutorial)

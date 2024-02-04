@@ -18,7 +18,6 @@ jobs:
 
     env:
       DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
-      SECRET: ${{ secrets.SECRET }}
       TRYLINKS_CONFIG: ${{ secrets.TRYLINKS_CONFIG }}
       USERNAME: ${{ secrets.USERNAME }}
       PASSWORD: ${{ secrets.PASSWORD }}
@@ -30,6 +29,8 @@ jobs:
       AUTH_DOMAIN: ${{vars.AUTH_DOMAIN}}
       AUTH_CLIENT_ID: ${{vars.AUTH_CLIENT_ID}}
       AUTH_REDIRECT_URI: ${{vars.AUTH_REDIRECT_URI}}
+      JWT_CHECK_AUDIENCE: ${{vars.JWT_CHECK_AUDIENCE}}
+      JWT_AUTH_DOMAIN: ${{vars.JWT_AUTH_DOMAIN}}
       
 
 

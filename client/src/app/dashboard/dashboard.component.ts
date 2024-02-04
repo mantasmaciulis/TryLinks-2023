@@ -17,8 +17,19 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.auth.user$.subscribe((u) => {
-      this.user = u.nickname;
+    this.auth.isAuthenticated$.subscribe((isAuthenticated) => {
+      if (isAuthenticated) {
+        this.auth.user$.subscribe((u) => {
+          this.user = u.nickname;
+        });
+        this.tryLinksService.login().subscribe(
+          //We are doing this so that we can tell the BE that we
+          //authenticated using auth0.
+        );
+        
+      } else {
+        this.user = "loading...";
+      }
     });
   }
 

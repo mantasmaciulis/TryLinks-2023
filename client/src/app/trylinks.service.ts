@@ -231,6 +231,29 @@ export class TrylinksService {
       );
   }
 
+  login(): Observable<boolean> {
+    //Sends Authorization header automatically
+    return this.http
+    .post(TrylinksService.serverAddr + '/api/user/login', {}, {
+      headers: TrylinksService.headers,
+        observe: 'response',
+        withCredentials: true
+      })
+      .pipe(
+        map((response: HttpResponse<any>) => {
+          if (response.status === 200 && response.body.data) {
+            this.lastTutorialId = response.body.data.last_tutorial;
+          }
+          return response.status === 200;
+        }),
+        catchError(error => {
+          console.log(`Login API failed with the following detail:\n`);
+          console.log(error);
+          return of(false);
+        })
+      );
+  }
+
   updateUser(lastTutorial: number): Observable<boolean> {
     return this.http
       .post(

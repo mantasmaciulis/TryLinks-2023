@@ -15,12 +15,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/markdown/markdown';
-import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
 import {MatLegacyDialogModule as MatDialogModule} from '@angular/material/legacy-dialog';
 
 
 import { AppRoutingModule } from './app-routing.module';
-import { AuthModule } from '@auth0/auth0-angular';
+import { AuthHttpInterceptor, AuthModule } from '@auth0/auth0-angular';
 import { AppComponent } from './app.component';
 import { WelcomeComponent } from './welcome/welcome.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -32,7 +32,7 @@ import { TutorialComponent } from './tutorial/tutorial.component';
 import { LoadingDialogComponent } from './loading-dialog/loading-dialog.component';
 import { LoginButtonComponent } from './buttons/login-button';
 import { LogoutButtonComponent } from './buttons/logout-button';
-import { environment } from 'src/environments/environment.prod';
+import { environment } from 'src/environments/environment';
 
 @NgModule({
     declarations: [
@@ -49,15 +49,30 @@ import { environment } from 'src/environments/environment.prod';
     ],
     imports: [
         BrowserModule,
-    AuthModule.forRoot({
-      domain: environment.auth.domain,
-      clientId: environment.auth.clientId,
-      cacheLocation: 'localstorage',
-      useRefreshTokens: true,
-      authorizationParams: {
-        redirect_uri: environment.auth.redirectUri
-      }
-    }),
+        AuthModule.forRoot({
+            domain: environment.auth.domain,
+            clientId: environment.auth.clientId,
+            cacheLocation: 'localstorage',
+            useRefreshTokens: true,
+            authorizationParams: {
+              redirect_uri: environment.auth.redirectUri,
+              audience: environment.auth.jwt_check_audiance,
+              scope: 'openid read:current_user offline_access profile',
+            },
+                      httpInterceptor: {
+              allowedList: [
+                {
+                  uri: environment.serviceUrl + '/api/*',
+                  tokenOptions: {
+                    authorizationParams: {
+                    audience: environment.auth.jwt_check_audiance,
+                    scope: 'openid read:current_user offline_access profile'
+                    }
+                  }
+                }
+              ]
+            }
+          }),
         BrowserAnimationsModule,
         CodemirrorModule,
         FormsModule,
@@ -80,7 +95,13 @@ import { environment } from 'src/environments/environment.prod';
         ReactiveFormsModule,
         AppRoutingModule
     ],
-    providers: [],
+    providers: [
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AuthHttpInterceptor,
+            multi: true,
+        }
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule {}
