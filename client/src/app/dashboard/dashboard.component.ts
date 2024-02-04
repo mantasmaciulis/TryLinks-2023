@@ -23,9 +23,23 @@ export class DashboardComponent implements OnInit {
         this.auth.user$.subscribe((u) => {
           console.log(u)
           this.user = u.nickname;
-          // Call Trylinksservice.login() after user is authenticated
         });
-        this.tryLinksService.login();
+        this.tryLinksService.login().subscribe(
+          (success: boolean) => {
+            if (success) {
+              console.log("Login successful");
+              // Handle any further actions upon successful login
+            } else {
+              console.log("Login failed");
+              // Handle any further actions upon failed login
+            }
+          },
+          (error) => {
+            console.error("An error occurred during login:", error);
+            // Handle error cases
+          }
+        );
+        
       } else {
         this.user = "loading...";
       }

@@ -13,6 +13,11 @@ var index = require('./routes/index')
 
 var app = express()
 
+app.use((req, res, next) => {
+  console.log(`Received a ${req.method} request at ${req.url}`);
+  next(); // Continue processing the request
+});
+
 delete process.env.SECRET;
 const jwtCheck = auth({
   audience: process.env.JWT_CHECK_AUDIENCE,

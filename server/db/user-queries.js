@@ -5,9 +5,12 @@ var db = require('./db-connect')
  * All DB actions for LinksUser.
  */
 
-function getUserByUsername (username) {
-  return db.one('select * from "LinksUser" where "username" = $1', username)
-}
+function getUserByUsername(username) {
+    return db.one('SELECT * FROM "LinksUser" WHERE "username" = $1', [username])
+  }
+  
+
+
 
 function createUser (username) {
   return db.none('insert into "LinksUser"("username", "last_tutorial")' +
