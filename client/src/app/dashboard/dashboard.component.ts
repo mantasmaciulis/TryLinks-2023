@@ -17,8 +17,18 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.auth.user$.subscribe((u) => {
-      this.user = u.nickname;
+    this.auth.isAuthenticated$.subscribe((isAuthenticated) => {
+      console.log(isAuthenticated)
+      if (isAuthenticated) {
+        this.auth.user$.subscribe((u) => {
+          console.log(u)
+          this.user = u.nickname;
+          // Call Trylinksservice.login() after user is authenticated
+        });
+        this.tryLinksService.login();
+      } else {
+        this.user = "loading...";
+      }
     });
   }
 
