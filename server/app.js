@@ -8,6 +8,7 @@ var compression = require('compression')
 var fs = require('fs')
 const { auth } = require('express-oauth2-jwt-bearer');
 require('dotenv').config()
+const session = require('express-session');
 
 var index = require('./routes/index')
 
@@ -17,6 +18,15 @@ app.use((req, res, next) => {
   console.log(`Received a ${req.method} request at ${req.url}`);
   next(); // Continue processing the request
 });
+
+app.use(session({
+  secret: "test",
+  saveUninitialized: true,
+  resave: false,
+  cookie: { 
+    maxAge: 604800000
+  }
+}));
 
 delete process.env.SECRET;
 const jwtCheck = auth({
