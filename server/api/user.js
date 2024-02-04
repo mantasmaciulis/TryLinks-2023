@@ -2,15 +2,10 @@ var userDB = require('../db/user-queries')
 var bcrypt = require('bcryptjs')
 
 function login(req, res) {
-  console.log("Logging in now for ")
-  console.log(req.auth.payload.sub)
-
   const userID = req.auth.payload.sub;
 
   userDB.getUserByUsername(userID)
     .then((user) => {
-      console.log("user :")
-      console.log(user)
       req.session.user = user;
       res.status(200).json({
         status: 'success',
@@ -23,7 +18,6 @@ function login(req, res) {
       });
     })
     .catch((e) => {
-      console.log(e)
       userDB.createUser(userID)
         .then(() => {
           res.status(200).json({

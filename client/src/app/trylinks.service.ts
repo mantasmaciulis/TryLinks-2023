@@ -233,7 +233,6 @@ export class TrylinksService {
 
   login(): Observable<boolean> {
     //Sends Authorization header automatically
-    console.log("send: " + TrylinksService.serverAddr + '/api/user/login')
     return this.http
     .post(TrylinksService.serverAddr + '/api/user/login', {}, {
       headers: TrylinksService.headers,
@@ -242,7 +241,6 @@ export class TrylinksService {
       })
       .pipe(
         map((response: HttpResponse<any>) => {
-          console.log("i am here now")
           if (response.status === 200 && response.body.data) {
             this.lastTutorialId = response.body.data.last_tutorial;
           }

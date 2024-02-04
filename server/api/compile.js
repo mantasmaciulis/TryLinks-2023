@@ -81,6 +81,7 @@ module.exports.compileLinksFile = function (req, res, next) {
           sleep(process.env.COMPILE_ENV_TIME)
 
           socket.emit('compiled', module.exports.port)
+          console.log('compiled', module.exports.port)
         }).catch(error => {
           console.log(error)
           socket.emit('compile error', 'could not build config and source files')
