@@ -107,7 +107,7 @@ export class TutorialComponent implements OnInit {
                 this.port = port;
                 this.renderUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
                   //we use http for user compiled apps.
-                  TrylinksService.serverAddr + `/compile/${port}`
+                  `${TrylinksService.serverAddr.replace('//', `//${port}.`)}/`
                 );
               });
 
