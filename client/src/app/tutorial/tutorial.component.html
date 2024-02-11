@@ -29,7 +29,7 @@
     <div class="tl-tutorial-main-desc markdown-body" [innerHTML]="tutorialDescription"></div>
 
     <div class="tl-tutorial-main-col">
-      <awg-codemirror class="codemirror"></awg-codemirror>
+      <awg-codemirror class="codemirror" [(content)]="source"></awg-codemirror>
       <div class="tl-tutorial-main-render-control">
         <pre class="tl-tutorial-main-render-error">{{ compileError }}</pre>
         <button mat-raised-button color="primary" class="tl-compile-btn" (click)="onCompile()">

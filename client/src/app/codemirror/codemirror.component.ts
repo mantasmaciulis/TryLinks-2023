@@ -183,7 +183,7 @@ export class CodeMirrorComponent implements AfterViewInit, OnChanges {
         });
 
         const config: EditorStateConfig = {
-            doc: "fun(x: String, y: Int)",
+            doc: this.content || '',
             extensions: [
               lineNumbers(),
               highlightActiveLineGutter(),
