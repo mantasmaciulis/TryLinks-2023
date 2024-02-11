@@ -29,7 +29,7 @@
     <div class="tl-tutorial-main-desc markdown-body" [innerHTML]="tutorialDescription"></div>
 
     <div class="tl-tutorial-main-col">
-      <ngx-codemirror [(ngModel)]="source" [options]="editorOptions"></ngx-codemirror>
+      <!-- <ngx-codemirror [(ngModel)]="source" [options]="editorOptions"></ngx-codemirror> -->
       <div class="tl-tutorial-main-render-control">
         <pre class="tl-tutorial-main-render-error">{{ compileError }}</pre>
         <button mat-raised-button color="primary" class="tl-compile-btn" (click)="onCompile()">
