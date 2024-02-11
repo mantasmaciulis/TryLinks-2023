@@ -26,10 +26,46 @@ import {
     ViewEncapsulation,
 } from '@angular/core';
 
-import { StreamLanguage, StreamParser } from '@codemirror/language';
-import { EditorState, Extension } from '@codemirror/state';
-import { basicSetup, EditorView } from 'codemirror';
+import {
+    bracketMatching,
+    foldGutter,
+    foldKeymap,
+    indentOnInput,
+    syntaxHighlighting,
+    StreamParser,
+} from '@codemirror/language'
+
+import { 
+    crosshairCursor, 
+    drawSelection, 
+    dropCursor, 
+    highlightActiveLine,
+    highlightActiveLineGutter, 
+    highlightSpecialChars, 
+    keymap, 
+    lineNumbers, 
+    rectangularSelection 
+} from '@codemirror/view'
+
+import { EditorState } from '@codemirror/state';
+import { EditorView } from 'codemirror';
 import { CodeEditorService } from './codemirror.service';
+
+//Links Highlighting
+import { linksHighlightStyle } from './linksHighlightStyle';
+
+//Links Parsing
+import {linksLanguageSupport} from './linksLanguageSupport'
+
+//Dark-Mode Style
+import {dracula} from '@uiw/codemirror-theme-dracula'
+
+import { highlightSelectionMatches, searchKeymap } from '@codemirror/search'
+import { defaultKeymap, history, historyKeymap } from '@codemirror/commands'
+import { autocompletion, closeBrackets, closeBracketsKeymap, completionKeymap } from '@codemirror/autocomplete'
+import { lintKeymap } from '@codemirror/lint'
+
+
 
 /**
  * The CmMode type.
@@ -145,30 +181,47 @@ export class CodeMirrorComponent implements AfterViewInit, OnChanges {
                 maxHeight: '300px',
             },
         });
-        const editorThemeExtension: Extension[] = [editorTheme];
 
-        const ext: Extension[] = [
-            basicSetup,
-            EditorView.lineWrapping,
-
-            // Apply the custom editor theme
-            editorThemeExtension,
-
-            // Listen for editor content changes
-            EditorView.updateListener.of(view => {
+        const config: EditorStateConfig = {
+            doc: "fun(x: String, y: Int)",
+            extensions: [
+              lineNumbers(),
+              highlightActiveLineGutter(),
+              highlightSpecialChars(),
+              history(),
+              foldGutter(),
+              drawSelection(),
+              dropCursor(),
+              EditorState.allowMultipleSelections.of(true),
+              indentOnInput(),
+              syntaxHighlighting(linksHighlightStyle, { fallback: false }),
+              bracketMatching(),
+              closeBrackets(),
+              autocompletion(),
+              rectangularSelection(),
+              crosshairCursor(),
+              highlightActiveLine(),
+              highlightSelectionMatches(),
+              keymap.of([
+                ...closeBracketsKeymap,
+                ...defaultKeymap,
+                ...searchKeymap,
+                ...historyKeymap,
+                ...foldKeymap,
+                ...completionKeymap,
+                ...lintKeymap,
+              ]),
+              linksLanguageSupport(),
+              dracula,
+              EditorView.updateListener.of(view => {
                 if (view.docChanged) {
                     this.onContentChange(view.state.doc.toString());
                     
                 }
             }),
-
-            // Define the language mode
-        ];
-
-        const config: EditorStateConfig = {
-            doc: this.content || '',
-            extensions: ext,
-        };
+              
+            ],
+          }
 
         const state = EditorState.create(config);
         this.init(state);
@@ -202,7 +255,8 @@ export class CodeMirrorComponent implements AfterViewInit, OnChanges {
      */
     onContentChange(content: string): void {
         this.contentChange.emit(content);
+        //Used to get editor content from other locations.
         this.codeEditorService.updateEditorContent(content);
 
-    }
+    }   
 }
