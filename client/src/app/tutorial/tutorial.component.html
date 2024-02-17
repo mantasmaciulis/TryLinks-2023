@@ -5,11 +5,16 @@
   <img class="tl-logo" src="assets/logo.svg" alt="Links Logo" />
   <div class="tl-header-name">TryLinks Interactive Shell</div>
   <div class="tl-expander"></div>
+  
+
   <button mat-button color="primary" class="tl-tutorial-button" (click)="navToDashboardPage()">
     Dashboard
   </button>
   <button mat-button color="primary" class="tl-interactive-button" (click)="navToInteractivePage()">
     Interactive
+  </button>
+  <button mat-button color="primary" class="tl-compile-btn" (click)="onCompile()">
+    Save and Compile
   </button>
 </mat-toolbar>
 
@@ -25,29 +30,32 @@
     </mat-list>
   </mat-drawer>
 
-  <div class="tl-tutorial-content">
+  <as-split class="tl-tutorial-content">
+    <as-split-area [size]="34">
+      <!--  first panel -->
     <div class="tl-tutorial-main-desc markdown-body" [innerHTML]="tutorialDescription"></div>
-
-    <div class="tl-tutorial-main-col">
-      <awg-codemirror class="codemirror" [(content)]="source"></awg-codemirror>
-      <div class="tl-tutorial-main-render-control">
-        <pre class="tl-tutorial-main-render-error">{{ compileError }}</pre>
-        <button mat-raised-button color="primary" class="tl-compile-btn" (click)="onCompile()">
-          Save and Compile
-        </button>
+    </as-split-area>
+    <as-split-area [size]="33">
+      <!--  second panel -->
+      <div class="tl-tutorial-main-col">
+        <awg-codemirror class="codemirror" [(content)]="source"></awg-codemirror>
+        <div class="tl-tutorial-main-render-control">
+          <pre class="tl-tutorial-main-render-error">{{ compileError }}</pre>
+        </div>
       </div>
-    </div>
-
-    <div class="tl-tutorial-main-render">
-      <div *ngIf="port == null" class="tl-tutorial-main-render-empty">
-        <h2>Preview Page</h2>
-        <p>
-          When you are happy with your Links code, <br />press the "Compile"
-          button below and see the web page generated!
-        </p>
+    </as-split-area>
+    <as-split-area [size]="33">
+      <div class="tl-tutorial-main-render">
+        <div *ngIf="port == null" class="tl-tutorial-main-render-empty">
+          <h2>Preview Page</h2>
+          <p>
+            When you are happy with your Links code, <br />press the "Compile"
+            button below and see the web page generated!
+          </p>
+        </div>
+        <iframe *ngIf="port != null" [src]="renderUrl" height="100%" width="100%" onload="return false;"
+          frameborder="0"></iframe>
       </div>
-      <iframe *ngIf="port != null" [src]="renderUrl" height="100%" width="100%" onload="return false;"
-        frameborder="0"></iframe>
-    </div>
-  </div>
-</mat-drawer-container>
+    </as-split-area>
+  </as-split>
+  

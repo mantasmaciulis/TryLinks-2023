@@ -30,6 +30,7 @@ import { LoadingDialogComponent } from './loading-dialog/loading-dialog.componen
 import { LoginButtonComponent } from './buttons/login-button';
 import { LogoutButtonComponent } from './buttons/logout-button';
 import { environment } from 'src/environments/environment';
+import { AngularSplitModule } from 'angular-split';
 
 @NgModule({
     declarations: [
@@ -46,6 +47,7 @@ import { environment } from 'src/environments/environment';
     ],
     imports: [
         BrowserModule,
+        AngularSplitModule,
         CodeMirrorModule,
         AuthModule.forRoot({
             domain: environment.auth.domain,
