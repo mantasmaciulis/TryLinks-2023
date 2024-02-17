@@ -1,22 +1,19 @@
-<div class="tl-welcome">
-  <div class="tl-header">
-      TryLinks {{envName ? envName : ""}}
+<mat-toolbar class="tl-start-header">
+    <img class="tl-logo" src="assets/logo.svg" alt="Links Logo">
+    <div class="tl-header-name">  TryLinks {{envName ? envName : ""}} </div>
+    <div class="tl-expander"></div>
+    <app-login-button></app-login-button>
+  </mat-toolbar>
+
+  <div class="container">
+    <h1 class="title">Links Made Effortless.</h1>
+    <h2 class="subheading">Dive right in with TryLinks – no setup needed.</h2>
+    <div class="image-container">
+      <img src="assets/REPL.gif" alt="Repl Shell Example Image" class="center-image">
+      <img src="assets/tutorial.gif" alt="Tutorial Page Example Image" class="center-image">
+    </div>
+    <p class="description">TryLinks allows you to experiment with the Links programming language, bypassing difficult setup. Experiment freely, explore Links concepts, and build your understanding – all within a  user-friendly environment.</p>
+    <div class="cta-buttons">
+      <button class="try-button">Try it Now!</button>
+    </div>
   </div>
-  <div class="tl-content">
-      <div class="tl-description">
-          <img class="tl-logo" src="assets/logo.svg" alt="Links Logo">
-          <div class="tl-description-text">
-              <p><a href="http://links-lang.org/">Links</a> is a functional programming language designed to make web programming easier.</p>
-              <p>Links eases building interactive web applications with significant client- and server-side components.</p>
-              <p>Trylinks is an online platform where you can explore the Links language, and learn to use Links to make some webpages along the way too!</p>
-              <div class="tl-demo">
-                  <img class="tl-demo-gif" src="assets/REPL.gif" alt="Links REPL Demo">
-                  <img class="tl-demo-gif" src="assets/tutorial.gif" alt="Links tutorial Demo">
-              </div>
-          </div>
-      </div>
-      <div class="ti-actions">
-          <app-login-button class="btn"></app-login-button>
-      </div>
-  </div>
-</div>
