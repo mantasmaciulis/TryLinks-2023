@@ -12,13 +12,10 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatLegacyTooltipModule as MatTooltipModule} from '@angular/material/legacy-tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CodemirrorModule } from '@ctrl/ngx-codemirror';
-import 'codemirror/mode/javascript/javascript';
-import 'codemirror/mode/markdown/markdown';
 import { HTTP_INTERCEPTORS, HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
 import {MatLegacyDialogModule as MatDialogModule} from '@angular/material/legacy-dialog';
 
-
+import { CodeMirrorModule } from './codemirror/codemirror.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AuthHttpInterceptor, AuthModule } from '@auth0/auth0-angular';
 import { AppComponent } from './app.component';
@@ -49,6 +46,7 @@ import { environment } from 'src/environments/environment';
     ],
     imports: [
         BrowserModule,
+        CodeMirrorModule,
         AuthModule.forRoot({
             domain: environment.auth.domain,
             clientId: environment.auth.clientId,
@@ -74,7 +72,6 @@ import { environment } from 'src/environments/environment';
             }
           }),
         BrowserAnimationsModule,
-        CodemirrorModule,
         FormsModule,
         HttpClientModule,
         HttpClientXsrfModule.withOptions({
