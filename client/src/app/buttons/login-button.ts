@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AuthService } from '@auth0/auth0-angular';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login-button',
@@ -7,13 +7,10 @@ import { AuthService } from '@auth0/auth0-angular';
   styleUrls: ['./login-button.component.scss']
 })
 export class LoginButtonComponent {
-  constructor(private auth: AuthService) {}
+  constructor(private router: Router) {}
 
   login() {
-    this.auth.loginWithRedirect({
-        appState: {
-          target: '/dashboard',
-        },
-      });
+    //login automatically triggered via routeguards
+    this.router.navigate(['/dashboard']);
       }
 }
