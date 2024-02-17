@@ -15,6 +15,9 @@ export class WelcomeComponent implements OnInit {
 
   ngOnInit() {
   }
+  login(){
+    this.router.navigate(['/dashboard']);
+  }
 
   navToStartPage(): void {
     this.router.navigate(['start']);
