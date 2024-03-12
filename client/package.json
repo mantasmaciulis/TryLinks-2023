@@ -30,7 +30,6 @@
     "dotenv": "^16.4.1",
     "jsonwebtoken": "^9.0.2",
     "marked": "^12.0.0",
-    "ngx-store": "^3.1.1",
     "rxjs": "^7.8.1",
     "sass": "^1.68.0",
     "socket.io-client": "^4.7.2",
