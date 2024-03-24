@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { TrylinksService } from '../trylinks.service';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
@@ -14,8 +14,8 @@ import * as marked from 'marked';
   templateUrl: './tutorial.component.html',
   styleUrls: ['./tutorial.component.scss', './markdown.scss']
 })
-export class TutorialComponent implements OnInit {
-  // TODO(fix links styling in editor).
+export class TutorialComponent implements OnInit, OnDestroy {
+  socket: Socket | null = null;
   tutorialDescription: SafeHtml;
   source = '';
   editorOptions = {
@@ -31,7 +31,6 @@ export class TutorialComponent implements OnInit {
   renderUrl: SafeHtml;
   id: number;
   headers: any[];
-  socket: Socket;
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -43,6 +42,10 @@ export class TutorialComponent implements OnInit {
 
   ngOnInit() {
     this.loadTutorial();
+  }
+
+  ngOnDestroy() {
+    this.disconnectSocket();
   }
 
   loadTutorial() {
@@ -85,47 +88,65 @@ export class TutorialComponent implements OnInit {
   
   onCompile(): void {
     this.dialog.open(LoadingDialogComponent);
-    this.tryLinksService
-      .saveTutorialSource(this.id, this.source)
-      .subscribe(_ => {
-        this.tryLinksService.compileAndDeploy().subscribe(socketPath => {
-          if (socketPath === '') {
-            this.dialog.closeAll();
-            return;
-          }
-
-          this.compileError = '';
-          if (this.socket && this.socket.connected) {
-            this.socket.emit('compile');
-          } else {
-            const namespace = TrylinksService.serverAddr + socketPath;
-            this.socket = io(namespace);
-
-            this.socket.on('connect', () => {
-              this.socket.on('compiled', port => {
-                this.dialog.closeAll();
-                this.port = port;
-                this.renderUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-                  //we use http for user compiled apps.
-                  `${TrylinksService.serverAddr.replace('//', `//${port}.`)}/`
-                );
-              });
-
-              this.socket.on('compile error', error => {
-                this.compileError = error;
-                this.port = null;
-              });
-
-              this.socket.on('shell error', error => {
-                this.compileError = error;
-                this.port = null;
-              });
-              
-              this.socket.emit('compile');
-            });
-          }
-        });
+  
+    this.tryLinksService.saveTutorialSource(this.id, this.source).subscribe(_ => {
+      this.tryLinksService.compileAndDeploy().subscribe(socketPath => {
+        if (!socketPath) {
+          this.dialog.closeAll();
+          return;
+        }
+  
+        if (this.socket && this.socket.connected) {
+          this.socket.emit('compile');
+        } else {
+          this.setupNewSocketConnection(socketPath);
+        }
       });
+    });
+  }
+
+  setupNewSocketConnection(socketPath: string): void {
+    const namespace = TrylinksService.serverAddr + socketPath;
+    this.disconnectSocket();
+    this.socket = io(namespace);
+  
+    this.socket.on('connect', () => {
+      console.log("compiling")
+      this.registerSocketEventListeners();
+      this.socket.emit('compile');
+    });
+  }
+
+  disconnectSocket(): void {
+    if (this.socket) {
+      this.socket.removeAllListeners();
+      this.socket.disconnect();
+      this.socket = null;
+    }
+  }
+
+  registerSocketEventListeners(): void {
+    if (!this.socket) return;
+  
+    this.socket.on('compiled', (port: number) => {
+      this.dialog.closeAll();
+      this.port = port;
+      this.renderUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+        `${TrylinksService.serverAddr.replace('//', `//${port}.`)}/`
+      );
+    });
+  
+    this.socket.on('compile error', (error: string) => {
+      this.compileError = error;
+      this.port = null;
+      this.dialog.closeAll();
+    });
+  
+    this.socket.on('shell error', (error: string) => {
+      this.compileError = error;
+      this.port = null;
+      this.dialog.closeAll();
+    });
   }
 
   navToTutorial(i) {
