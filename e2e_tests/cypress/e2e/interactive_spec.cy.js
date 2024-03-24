@@ -7,13 +7,13 @@ describe('Dashboard Tests', function() {
   it('should redirect user back to the dashboard', function() {
     cy.get('button:contains("Launch Links Interactive Mode")').click();
     cy.get('.tl-dashboard-button').click();
-    cy.url().should('eq', 'http://trylinks.net/dashboard');
+    cy.url().should('eq', 'https://dev.trylinks.net/dashboard');
   });
 
   it('should pass interactive mode introduction', function() {
     //Visit interactive mode
     cy.get('button:contains("Launch Links Interactive Mode")').click();
-    cy.url().should('eq', 'http://trylinks.net/interactive');
+    cy.url().should('eq', 'https://dev.trylinks.net/interactive');
     // Wait for 2 seconds for links shell to load.
     cy.wait(2000);
 
@@ -118,7 +118,7 @@ describe('Dashboard Tests', function() {
 it('should receive evaluated code within 2s', function() {
   //Visit interactive mode
   cy.get('button:contains("Launch Links Interactive Mode")').click();
-  cy.url().should('eq', 'http://trylinks.net/interactive');
+  cy.url().should('eq', 'https://dev.trylinks.net/interactive');
   // Wait for 2 seconds for links shell to load.
   cy.wait(2000);
 
