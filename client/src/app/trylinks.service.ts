@@ -103,6 +103,7 @@ export class TrylinksService {
   }
 
   saveTutorialSource(id: number, source: string): Observable<boolean> {
+    console.log(`Saving tutorial source with id: ${id} and data: ${source}`);
     return this.http
       .post(
         TrylinksService.serverAddr + '/api/file/write',
