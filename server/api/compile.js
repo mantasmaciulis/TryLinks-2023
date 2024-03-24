@@ -60,7 +60,7 @@ module.exports.compileLinksFile = function (req, res, next) {
   var io = require('../sockets_base').io
   var socketPath = `/${username}_tutorial`
   console.log(`Setting up config websocket for ${socketPath}`);
-  io.of(socketPath).on('connection', function (socket) {
+  io.of(socketPath).once('connection', function (socket) {
     console.log(`Compile socket connected for ${socketPath}`);
     socket.on('compile', function () {
       console.log(`Received compile command for Tutorial ${tutorialId} for user ${username}`);
@@ -95,6 +95,7 @@ module.exports.compileLinksFile = function (req, res, next) {
         })
     })
     socket.on('disconnect', function () {
+      console.log("DISCONNECT CALLED!")
       socket.removeAllListeners('compile');
       socket.removeAllListeners('connection');
       killLinksProc(username)
