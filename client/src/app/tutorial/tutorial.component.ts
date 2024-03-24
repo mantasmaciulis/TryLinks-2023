@@ -97,6 +97,9 @@ export class TutorialComponent implements OnInit, OnDestroy {
         }
   
         if (this.socket && this.socket.connected) {
+          console.log("compile")
+          console.log(this.socket)
+          console.log(this.socket.connected)
           this.socket.emit('compile');
         } else {
           this.setupNewSocketConnection(socketPath);

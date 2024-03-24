@@ -96,6 +96,7 @@ module.exports.compileLinksFile = function (req, res, next) {
     })
     socket.on('disconnect', function () {
       socket.removeAllListeners('compile');
+      socket.removeAllListeners('connection');
       killLinksProc(username)
       if (io.nsps && io.nsps[socketPath]) {
         delete io.nsps[socketPath];
