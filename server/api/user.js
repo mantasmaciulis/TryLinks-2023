@@ -1,6 +1,17 @@
 var userDB = require('../db/user-queries')
 var bcrypt = require('bcryptjs')
 
+function getUID(req, res){
+  const userID = req.auth.payload.sub;
+  if(userID) {
+    // Sending the userID as a response
+    res.status(200).json({ userID: userID });
+  } else {
+    res.status(400).json({ error: 'User ID not found' });
+  }
+}
+
+
 function login(req, res) {
   const userID = req.auth.payload.sub;
 
@@ -85,5 +96,6 @@ function logout (req, res, next) {
 module.exports = {
   login: login,
   update: update,
-  logout: logout
+  logout: logout,
+  getUID: getUID
 }

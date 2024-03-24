@@ -42,7 +42,23 @@ export class TutorialComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loadTutorial();
+    //this.setupWebSocket();
   }
+
+  setupWebSocket(): void {
+    // Setup WebSocket connection
+    this.tryLinksService.getUID().subscribe(uid => {
+      const namespace = TrylinksService.serverAddr + '/' + uid;
+      this.socket = io(namespace);    
+      this.socket.on('connect', () => {
+        console.log("WebSocket connected");
+        // Register event listeners for WebSocket events
+        this.registerSocketEventListeners();
+      });
+    });
+  }
+  
+  
 
   ngOnDestroy() {
     this.disconnectSocket();
@@ -100,7 +116,8 @@ export class TutorialComponent implements OnInit, OnDestroy {
           console.log("compile")
           console.log(this.socket)
           console.log(this.socket.connected)
-          this.socket.emit('compile');
+          this.socket.emit('compile', { tutorialId: this.tryLinksService.lastTutorialId });
+
         } else {
           this.setupNewSocketConnection(socketPath);
         }
@@ -116,12 +133,13 @@ export class TutorialComponent implements OnInit, OnDestroy {
     this.socket.on('connect', () => {
       console.log("compiling")
       this.registerSocketEventListeners();
-      this.socket.emit('compile');
+      this.socket.emit('compile', { tutorialId: this.tryLinksService.lastTutorialId });
     });
   }
 
   disconnectSocket(): void {
     if (this.socket) {
+      console.log("disconnecting")
       this.socket.removeAllListeners();
       this.socket.disconnect();
       this.socket = null;
@@ -130,6 +148,7 @@ export class TutorialComponent implements OnInit, OnDestroy {
 
   registerSocketEventListeners(): void {
     if (!this.socket) return;
+    console.log("registering")
   
     this.socket.on('compiled', (port: number) => {
       this.dialog.closeAll();
@@ -155,9 +174,6 @@ export class TutorialComponent implements OnInit, OnDestroy {
   navToTutorial(i) {
     this.id = i;
     this.port = null;
-    if (this.socket != null) {
-      this.socket.disconnect();
-    }
     this.router.navigate(['tutorial', i]);
     this.loadTutorial();
   }

@@ -14,6 +14,7 @@ router.post('/api/file/write', fileAPI.writeFile)
 router.get('/api/initInteractive', interactiveAPI.initInteractive)
 router.get('/api/compile', compileAPI.compileLinksFile)
 router.get('/api/logout', userAPI.logout)
+router.get('/api/UID', userAPI.getUID)
 
 router.post('/api/tutorial/create', tutorialAPI.createTutorial)
 router.post('/api/tutorial/update', tutorialAPI.updateTutorial)

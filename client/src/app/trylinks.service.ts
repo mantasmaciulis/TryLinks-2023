@@ -129,6 +129,27 @@ export class TrylinksService {
       );
   }
 
+  getUID(): Observable<string> {
+    return this.http.get<any>(
+      TrylinksService.serverAddr + '/api/UID',
+      {
+        observe: 'response',
+        withCredentials: true // If your API requires credentials
+      }
+    ).pipe(
+      map((response: HttpResponse<any>) => {
+        if (response.status === 200) {
+          return response.body.userID;
+        }
+        return '';
+      }),
+      catchError(error => {
+        console.log(`Get UID API failed:\n`);
+        console.log(error);
+        return of('');
+      })
+    );}
+
   getTutorialDesc(id: number): Observable<string> {
     return this.http
       .post(
