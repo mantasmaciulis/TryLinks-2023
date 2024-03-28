@@ -8,3 +8,10 @@ Cypress.Commands.add('loginTestUser', () => {
       cy.get('button[data-action-button-primary="true"]').click();
 });
 });
+
+Cypress.Commands.add('getIframeBody', (iframeSelector) => {
+  cy.get(iframeSelector).then($iframe => {
+      const doc = $iframe.contents();
+      return cy.wrap(doc.find('body'));
+  });
+});
