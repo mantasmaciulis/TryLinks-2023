@@ -19,8 +19,7 @@ jobs:
 
     env:
       DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
-      # test what if i do not use this?
-      # TRYLINKS_CONFIG: ${{ secrets.TRYLINKS_CONFIG }}
+      TRYLINKS_CONFIG: ${{ secrets.TRYLINKS_CONFIG }}
       USERNAME: ${{ secrets.USERNAME }}
       PASSWORD: ${{ secrets.PASSWORD }}
       COMPILE_WAIT_TIME: ${{ vars.COMPILE_WAIT_TIME }}
