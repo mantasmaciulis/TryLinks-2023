@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { TrylinksService } from '../trylinks.service';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
@@ -6,7 +6,6 @@ import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import io from 'socket.io-client';
 import { Socket } from 'socket.io-client'; 
 import { LoadingDialogComponent } from '../loading-dialog/loading-dialog.component';
-import { IconOptions } from '@angular/material/icon';
 import * as marked from 'marked';
 
 @Component({
@@ -14,8 +13,8 @@ import * as marked from 'marked';
   templateUrl: './tutorial.component.html',
   styleUrls: ['./tutorial.component.scss', './markdown.scss']
 })
-export class TutorialComponent implements OnInit {
-  // TODO(fix links styling in editor).
+export class TutorialComponent implements OnInit, OnDestroy {
+  socket: Socket | null = null;
   tutorialDescription: SafeHtml;
   source = '';
   editorOptions = {
@@ -31,7 +30,6 @@ export class TutorialComponent implements OnInit {
   renderUrl: SafeHtml;
   id: number;
   headers: any[];
-  socket: Socket;
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -43,6 +41,14 @@ export class TutorialComponent implements OnInit {
 
   ngOnInit() {
     this.loadTutorial();
+  }
+
+  ngOnDestroy() {
+    // This is very important, otherwise listeners will build up on the server
+    // and each time we submit something to /compile it will execute it another
+    // time. Eventually, this will crash the server e.g. by the 8th compile req
+    // The user's program will compile 8 times on the server.
+    this.disconnectSocket();
   }
 
   loadTutorial() {
@@ -78,6 +84,7 @@ export class TutorialComponent implements OnInit {
         });
     });
   }
+  //Tutorial descriptions from the server are retrieved in markdown format.
   async convertMarkdownToHtml(description: string): Promise<void> {
     const htmlContent = await marked.parse(description);
     this.tutorialDescription = this.sanitizer.bypassSecurityTrustHtml(htmlContent);
@@ -85,55 +92,76 @@ export class TutorialComponent implements OnInit {
   
   onCompile(): void {
     this.dialog.open(LoadingDialogComponent);
-    this.tryLinksService
-      .saveTutorialSource(this.id, this.source)
-      .subscribe(_ => {
-        this.tryLinksService.compileAndDeploy().subscribe(socketPath => {
-          if (socketPath === '') {
-            this.dialog.closeAll();
-            return;
-          }
+  
+    this.tryLinksService.saveTutorialSource(this.id, this.source).subscribe(_ => {
+      this.tryLinksService.compileAndDeploy().subscribe(socketPath => {
+        if (!socketPath) {
+          this.dialog.closeAll();
+          return;
+        }
+  
+        if (this.socket && this.socket.connected) {
+          //This modification is required to let the compile and deploy pipeline know on the
+          //server which tutorial we want to compile, as the scope for a websocket listener
+          //is just itself.
+          this.socket.emit('compile', { tutorialId: this.tryLinksService.lastTutorialId });
 
-          this.compileError = '';
-          if (this.socket && this.socket.connected) {
-            this.socket.emit('compile');
-          } else {
-            const namespace = TrylinksService.serverAddr + socketPath;
-            this.socket = io(namespace);
-
-            this.socket.on('connect', () => {
-              this.socket.on('compiled', port => {
-                this.dialog.closeAll();
-                this.port = port;
-                this.renderUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-                  //we use http for user compiled apps.
-                  `${TrylinksService.serverAddr.replace('//', `//${port}.`)}/`
-                );
-              });
-
-              this.socket.on('compile error', error => {
-                this.compileError = error;
-                this.port = null;
-              });
-
-              this.socket.on('shell error', error => {
-                this.compileError = error;
-                this.port = null;
-              });
-              
-              this.socket.emit('compile');
-            });
-          }
-        });
+        } else {
+          //We only setup a new websocket connection in cases where the old one has been closed.
+          this.setupNewSocketConnection(socketPath);
+        }
       });
+    });
+  }
+
+  setupNewSocketConnection(socketPath: string): void {
+    const namespace = TrylinksService.serverAddr + socketPath;
+    //Another check to prevent the buildup of listeners, only *ONE* socket should ever be established
+    //per user.
+    this.disconnectSocket();
+    this.socket = io(namespace);
+  
+    this.socket.on('connect', () => {
+      this.registerSocketEventListeners();
+      this.socket.emit('compile', { tutorialId: this.tryLinksService.lastTutorialId });
+    });
+  }
+
+  disconnectSocket(): void {
+    if (this.socket) {
+      this.socket.removeAllListeners();
+      this.socket.disconnect();
+      this.socket = null;
+    }
+  }
+
+  registerSocketEventListeners(): void {
+    if (!this.socket) return;
+  
+    this.socket.on('compiled', (port: number) => {
+      this.dialog.closeAll();
+      this.port = port;
+      this.renderUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+        `${TrylinksService.serverAddr.replace('//', `//${port}.`)}/`
+      );
+    });
+  
+    this.socket.on('compile error', (error: string) => {
+      this.compileError = error;
+      this.port = null;
+      this.dialog.closeAll();
+    });
+  
+    this.socket.on('shell error', (error: string) => {
+      this.compileError = error;
+      this.port = null;
+      this.dialog.closeAll();
+    });
   }
 
   navToTutorial(i) {
     this.id = i;
     this.port = null;
-    if (this.socket != null) {
-      this.socket.disconnect();
-    }
     this.router.navigate(['tutorial', i]);
     this.loadTutorial();
   }

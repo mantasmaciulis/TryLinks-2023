@@ -3,6 +3,10 @@ const pf = require('portfinder')
 const fileDB = require('../db/file-queries')
 const { spawn } = require('child_process')
 
+//Used to track and limit websocket instances
+module.exports.socketMap = new Map()
+
+//Used to track links shell instances
 module.exports.sessionMap = new Map()
 
 module.exports.createConfigFile = username => {
@@ -31,12 +35,12 @@ module.exports.createSourceFile = (username, tutorialId) => {
 }
 
 function killLinksProc (username) {
+  const sessionExists = module.exports.sessionMap.has(username);
   if (module.exports.sessionMap.get(username) !== null &&
     module.exports.sessionMap.get(username) !== undefined &&
       !module.exports.sessionMap.get(username).killed) {
     module.exports.sessionMap.get(username).kill()
     module.exports.sessionMap.delete(username)
-    console.log('Killing compile shell for user ' + username)
   }
 }
 
@@ -51,53 +55,65 @@ function sleep (milliseconds) {
 
 module.exports.compileLinksFile = function (req, res, next) {
   const username = req.auth.payload.sub;
-  const tutorialId = req.session.user.last_tutorial
-  var io = require('../sockets_base').io
-  var socketPath = `/${username}_tutorial`
-  // console.log('setting up config websocket')
-  io.of(socketPath).on('connection', function (socket) {
-  // console.log('compile socket connected')
-    socket.on('compile', function () {
-      // console.log(`Compiling Tutorial ${tutorialId} for user ${username}`)
-      var promises = [module.exports.createConfigFile(username),
-        module.exports.createSourceFile(username, tutorialId)]
-      Promise.all(promises)
-        .then(() => {
-          killLinksProc(username)
-          let linxProc = spawn('linx', [`--config=tmp/${username}_config`, `tmp/${username}_source.links`])
+  const tutorialId = req.session.user.last_tutorial;
+  var io = require('../sockets_base').io;
+  var socketPath = `/${username}_tutorial`;
+
+  // Check if the WebSocket setup has already been completed for this user
+  if (!module.exports.socketMap.has(username)) {
+    io.of(socketPath).on('connection', function (socket) {
+
+      socket.on('compile', function (data) {
+        const tutID = data.tutorialId;
+        var promises = [module.exports.createConfigFile(username), module.exports.createSourceFile(username, tutID)];
+        Promise.all(promises).then(() => {
+          killLinksProc(username);
+          let linxProc = spawn('linx', [`--config=tmp/${username}_config`, `tmp/${username}_source.links`]);
+          
           linxProc.stdout.on('data', (data) => {
-            socket.emit('compile error', 'STDOUT: ' + data.toString())
-            // console.log('sent stdout: ' + data)
-          })
+            socket.emit('compile error', 'STDOUT: ' + data.toString());
+            console.log('sent stdout: ' + data);
+          });
 
           linxProc.stderr.on('data', (data) => {
-            socket.emit('compile error', 'STDERR: ' + data.toString())
-            // console.log('sent stderr: ' + data)
-          })
+            socket.emit('compile error', 'STDERR: ' + data.toString());
+          });
 
-          module.exports.sessionMap.set(username, linxProc)
+          // Use sessionMap to track the compile process
+          module.exports.sessionMap.set(username, linxProc);
 
-          // Time required for the code to compile; may differ depending on the environment
-          sleep(process.env.COMPILE_ENV_TIME)
+          sleep(process.env.COMPILE_ENV_TIME);
 
-          socket.emit('compiled', module.exports.port)
-          console.log('compiled', module.exports.port)
+          socket.emit('compiled', module.exports.port);
         }).catch(error => {
-          console.log(error)
-          socket.emit('compile error', 'could not build config and source files')
-        })
-    })
-    socket.on('disconnect', function () {
-      killLinksProc(username)
-      if (io.nsps && io.nsps[socketPath]) {
-        delete io.nsps[socketPath];
-      }
-    })
+          socket.emit('compile error', 'could not build config and source files');
+        });
+      });
 
-    socket.on('error', function (err) {
-      // console.log('Socket.IO Error')
-      console.log(err.stack) // this is changed from your code in last comment
-    })
-  })
-  res.status(200).json({path: socketPath})
-}
+      socket.on('disconnect', function () {
+        socket.removeAllListeners('compile');
+        socket.removeAllListeners('connection');
+        socket.removeAllListeners();
+        killLinksProc(username);
+        if (io.nsps && io.nsps[socketPath]) {
+          delete io.nsps[socketPath];
+        }
+      });
+
+      socket.on('error', function (err) {
+        console.log(err.stack);
+      });
+    });
+
+    // Mark this username as having an active WebSocket setup
+    module.exports.socketMap.set(username, true);
+  } else {
+    //If a websocket connection already exists, when compile is emmited from the front-end
+    // socket.on('compile', function (data) { will still complete even tho it is in the other
+    // branch of the if statement.
+    console.log(`WebSocket setup already completed for user ${username}`);
+  }
+
+  // Respond to the request indicating WebSocket setup is initialized
+  res.status(200).json({ path: socketPath });
+};
