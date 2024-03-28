@@ -6,7 +6,6 @@ import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import io from 'socket.io-client';
 import { Socket } from 'socket.io-client'; 
 import { LoadingDialogComponent } from '../loading-dialog/loading-dialog.component';
-import { IconOptions } from '@angular/material/icon';
 import * as marked from 'marked';
 
 @Component({
@@ -42,25 +41,13 @@ export class TutorialComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loadTutorial();
-    //this.setupWebSocket();
   }
-
-  setupWebSocket(): void {
-    // Setup WebSocket connection
-    this.tryLinksService.getUID().subscribe(uid => {
-      const namespace = TrylinksService.serverAddr + '/' + uid;
-      this.socket = io(namespace);    
-      this.socket.on('connect', () => {
-        console.log("WebSocket connected");
-        // Register event listeners for WebSocket events
-        this.registerSocketEventListeners();
-      });
-    });
-  }
-  
-  
 
   ngOnDestroy() {
+    // This is very important, otherwise listeners will build up on the server
+    // and each time we submit something to /compile it will execute it another
+    // time. Eventually, this will crash the server e.g. by the 8th compile req
+    // The user's program will compile 8 times on the server.
     this.disconnectSocket();
   }
 
@@ -97,6 +84,7 @@ export class TutorialComponent implements OnInit, OnDestroy {
         });
     });
   }
+  //Tutorial descriptions from the server are retrieved in markdown format.
   async convertMarkdownToHtml(description: string): Promise<void> {
     const htmlContent = await marked.parse(description);
     this.tutorialDescription = this.sanitizer.bypassSecurityTrustHtml(htmlContent);
@@ -113,12 +101,13 @@ export class TutorialComponent implements OnInit, OnDestroy {
         }
   
         if (this.socket && this.socket.connected) {
-          console.log("compile")
-          console.log(this.socket)
-          console.log(this.socket.connected)
+          //This modification is required to let the compile and deploy pipeline know on the
+          //server which tutorial we want to compile, as the scope for a websocket listener
+          //is just itself.
           this.socket.emit('compile', { tutorialId: this.tryLinksService.lastTutorialId });
 
         } else {
+          //We only setup a new websocket connection in cases where the old one has been closed.
           this.setupNewSocketConnection(socketPath);
         }
       });
@@ -127,11 +116,12 @@ export class TutorialComponent implements OnInit, OnDestroy {
 
   setupNewSocketConnection(socketPath: string): void {
     const namespace = TrylinksService.serverAddr + socketPath;
+    //Another check to prevent the buildup of listeners, only *ONE* socket should ever be established
+    //per user.
     this.disconnectSocket();
     this.socket = io(namespace);
   
     this.socket.on('connect', () => {
-      console.log("compiling")
       this.registerSocketEventListeners();
       this.socket.emit('compile', { tutorialId: this.tryLinksService.lastTutorialId });
     });
@@ -139,7 +129,6 @@ export class TutorialComponent implements OnInit, OnDestroy {
 
   disconnectSocket(): void {
     if (this.socket) {
-      console.log("disconnecting")
       this.socket.removeAllListeners();
       this.socket.disconnect();
       this.socket = null;
@@ -148,7 +137,6 @@ export class TutorialComponent implements OnInit, OnDestroy {
 
   registerSocketEventListeners(): void {
     if (!this.socket) return;
-    console.log("registering")
   
     this.socket.on('compiled', (port: number) => {
       this.dialog.closeAll();
