@@ -1,21 +1,15 @@
 describe('Dashboard Tests', function() {
     beforeEach(function() {
-        // Log in before each test in this suite
-          cy.visit('http://dev.trylinks.net/start');
-            cy.get('button.try-button').click();
-      
-            cy.origin('https://dev-z05qagcuczzy4gdp.us.auth0.com', () => {
-              cy.get('#username').type('mantest4@tas.co');
-              cy.get('#password').type('TEST123test.');      
-            cy.get('button[data-action-button-primary="true"]').click();
-      });
+      cy.loginTestUser(Cypress.env('testuser6').username, Cypress.env('testuser6').password)
+      //This wait is necesarry as auth0 can take up to a second to redirect with token.
+      cy.wait(1000);
       
       });
   
     it('should pass interactive mode introduction', function() {
       //Visit interactive mode
       cy.get('button:contains("Launch Links Interactive Mode")').click();
-      cy.url().should('eq', 'https://dev.trylinks.net/interactive');
+      cy.url().should('eq', `${Cypress.env('trylinks-domain')}/interactive`);
       // Wait for 2 seconds for links shell to load.
       cy.wait(2000);
   
