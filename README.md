@@ -26,7 +26,7 @@ To start using TryLinks, simply visit [TryLinks Web App](http://trylinks.net/). 
 
 TryLinks is an open-source project, and contributions are welcome! Whether it's adding new features, improving tutorials, or fixing bugs, your help can make TryLinks even better for everyone.
 
-To contribute, please check out our [wiki](https://github.com/mantasmaciulis/TryLinks-2023/wiki) which explain how the automatic deployment works as well as the contribution guidenlines.
+To contribute, please check out our [wiki](https://github.com/mantasmaciulis/TryLinks-2023/wiki) which explains how the automatic deployment works as well as the contribution guidenlines.
 
 ## License
 
