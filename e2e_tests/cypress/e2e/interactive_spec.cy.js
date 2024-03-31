@@ -1,19 +1,19 @@
 describe('Dashboard Tests', function() {
   beforeEach(function() {
       // Log in before each test in this suite
-      cy.loginTestUser()
+      cy.loginTestUser(Cypress.env('testuser1').username, Cypress.env('testuser1').password)
     });
 
   it('should redirect user back to the dashboard', function() {
     cy.get('button:contains("Launch Links Interactive Mode")').click();
     cy.get('.tl-dashboard-button').click();
-    cy.url().should('eq', 'https://dev.trylinks.net/dashboard');
+    cy.url().should('eq',`${Cypress.env('trylinks-domain')}/dashboard`);
   });
 
   it('should pass interactive mode introduction', function() {
     //Visit interactive mode
     cy.get('button:contains("Launch Links Interactive Mode")').click();
-    cy.url().should('eq', 'https://dev.trylinks.net/interactive');
+    cy.url().should('eq', `${Cypress.env('trylinks-domain')}/interactive`);
     // Wait for 2 seconds for links shell to load.
     cy.wait(2000);
 
@@ -118,7 +118,7 @@ describe('Dashboard Tests', function() {
 it('should receive evaluated code within 2s', function() {
   //Visit interactive mode
   cy.get('button:contains("Launch Links Interactive Mode")').click();
-  cy.url().should('eq', 'https://dev.trylinks.net/interactive');
+  cy.url().should('eq', `${Cypress.env('trylinks-domain')}/interactive`);
   // Wait for 2 seconds for links shell to load.
   cy.wait(2000);
 
@@ -144,6 +144,5 @@ it('should receive evaluated code within 2s', function() {
   performTest('[1, 4, 9, 16];', '[1, 4, 9, 16] : [Int]');
   performTest('next tip;', '[3 / 12] You can concatenate 2 lists by using ++. Try [1, 2] ++ [3, 4, 5];.');
 });
-
 
 });
