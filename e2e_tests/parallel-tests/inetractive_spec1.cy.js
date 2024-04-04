@@ -1,6 +1,6 @@
 describe('Dashboard Tests', function() {
   beforeEach(function() {
-    cy.loginTestUser(Cypress.env('testuser1').username, Cypress.env('testuser1').password)
+    cy.loginTestUser(Cypress.env('testuser21').username, Cypress.env('testuser21').password)
     cy.wait(1000);
     });
 
@@ -9,7 +9,7 @@ describe('Dashboard Tests', function() {
     cy.get('button:contains("Launch Links Interactive Mode")').click();
     cy.url().should('eq', `${Cypress.env('trylinks-domain')}/interactive`);
     // Wait for 2 seconds for links shell to load.
-    cy.wait(2000);
+    cy.wait(8000);
 
     //First Introduction  test
     cy.get('.mat-input-element').should('be.visible').type('52;{enter}');

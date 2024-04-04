@@ -1,6 +1,7 @@
 describe('Dashboard Tests', function() {
     beforeEach(function() {
-      cy.loginTestUser(Cypress.env('testuser8').username, Cypress.env('testuser8').password)
+      cy.loginTestUser(Cypress.env('testuser26').username, Cypress.env('testuser26').password)
+      //This wait is necesarry as auth0 can take up to a second to redirect with token.
       cy.wait(1000);
       
       });
@@ -10,7 +11,7 @@ describe('Dashboard Tests', function() {
       cy.get('button:contains("Launch Links Interactive Mode")').click();
       cy.url().should('eq', `${Cypress.env('trylinks-domain')}/interactive`);
       // Wait for 2 seconds for links shell to load.
-      cy.wait(2000);
+      cy.wait(8000);
   
       //First Introduction  test
       cy.get('.mat-input-element').should('be.visible').type('52;{enter}');
