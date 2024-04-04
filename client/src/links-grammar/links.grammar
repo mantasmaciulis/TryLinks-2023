@@ -1,0 +1,823 @@
+@top File {
+    () | //Empty File
+    Declarations exp? |
+    exp }
+
+@skip { space | LineComment}
+
+@external propSource highlighting from "./links-highlight.js"
+
+kw<term> { @specialize[@name={term}]<IDENTIFIER, term> }
+@precedence{
+    Cons,
+    BitwiseXOR,
+    LogicalXOR,
+    Exponent,
+  
+    Multiplication @left,
+    Division @left,
+    Addition @left,
+    FloatMultiply @left,
+    FloatDivide @left,
+    FloatAdd @left,
+  
+    Subtraction @left,
+    FloatSubtract @left,
+  
+    LogicalNOT @left,
+  
+    Concatenation @right,
+  
+    RegexMatch @right,
+  
+    Equal ,
+    NotEqual ,
+    LessThan ,
+    LessEqual ,
+    GreaterEqual,
+    GreaterThan ,
+  
+    LogicalAND @right,
+  
+    LogicalOR @right,
+  
+    BitShiftRight @left,
+    FunctionApply @right
+  }
+
+@tokens {
+    @precedence {TypeName, CONSTRUCTOR}
+    @precedence {ConstantName, CONSTRUCTOR}
+      OP {
+        Cons |
+        BitwiseXOR |
+        LogicalXOR |
+        Exponent |
+      
+        Multiplication |
+        Division |
+        Addition |
+        FloatMultiply |
+        FloatDivide |
+        FloatAdd |
+      
+        LogicalNOT |
+      
+        Concatenation |
+      
+        RegexMatch |
+      
+        Equal |
+        NotEqual |
+        LessEqual |
+        GreaterEqual |
+        GreaterThan |
+      
+        LogicalAND |
+      
+        LogicalOR |
+      
+        BitShiftRight |
+        FunctionApply
+      }
+
+      Cons { "::" }
+BitwiseXOR { "^" }
+LogicalXOR { "^^" }
+Exponent { "**" }
+
+Multiplication { "*" }
+Division { "/" }
+Addition { "+" }
+FloatMultiply { "*." }
+FloatDivide { "/." }
+FloatAdd { "+." }
+
+Subtraction { "-" }
+FloatSubtract { "-." }
+
+LogicalNOT { "!" }
+
+Concatenation { "++" }
+
+RegexMatch { "=~" }
+
+Equal { "==" }
+NotEqual { "<>" }
+LessThan { "<" }
+LessEqual { "<=" }
+GreaterEqual { ">=" }
+GreaterThan { ">" }
+
+LogicalAND { "&&" }
+
+LogicalOR { "||" }
+
+BitShiftRight { ">>" }
+FunctionApply { "$" }
+
+      
+  LineComment { "#" ![\n]* }
+  space { @whitespace+ }
+  IDENTIFIER { $[a-z] $[a-zA-Z0-9_']* }
+  VARIABLE { IDENTIFIER }
+  Number { $[0-9]+ }
+  TypeName {
+    "Bool" | "Char" | "Int" | "Float" | "XmlItem" | "String" | "DateTime"
+  }
+
+  String { '"' !["]* '"' }
+  CONSTRUCTOR { $[A-Z] $[A-Za-z_]* } 
+  
+  "->"[@name=RARROW]
+  "="[@name=Equals]
+  "::"[@name=DBLCOLON]
+  CDATA {![{<>&}]+}
+  @precedence {CDATA, space, LineComment}
+
+
+
+}
+
+Declarations 
+{
+    Declarations MutualDeclBlock |
+    Declarations Declaration |
+    Declaration |
+    MutualDeclBlock
+}
+
+MutualDeclBlock {
+    kw<"mutual"> "{" MutualDecls "}"
+}
+MutualDecls {
+    Declaration |
+    MutualDecls Declaration
+}
+
+Declaration {
+    FunctionDeclaration |
+    NoFunDeclaration
+}
+
+FunctionDeclaration {
+    Tlfunbinding |
+    Signatures Tlfunbinding  
+}
+
+Tlfunbinding{
+    fun_kind IDENTIFIER ArgLists perhaps_location Block
+}
+
+NoFunDeclaration {
+    Typedecl ";" |
+    (Signature)? Tl_Var_Binding ";"
+}
+
+exp {
+    Case_Expression |
+    Conditional_Expression |
+    Database_Expression |
+    DBExpression | 
+    FormletExpession |
+    IterationExpression |
+    TableExpression |  
+    Typed_Expression 
+}
+
+exps {
+    exp ("," exp)*
+}
+
+
+Database_Expression 
+{
+    kw<"insert"> exp kw<"values"> "(" Record_Labels ")" exp |
+    kw<"insert"> exp kw<"values"> "[" "(" LabeledExps? ")" "]" (kw<"returning"> IDENTIFIER)? |
+    kw<"insert"> exp kw<"values"> "(" Record_Labels ")" Typed_Expression kw<"returning"> IDENTIFIER |
+    kw<"database"> Atomic_Expression Perhaps_DB_Driver
+}
+
+Record_Labels {
+    Record_Label ("," Record_Label)*
+}
+
+LabeledExps {
+    LabeledExp ("," LabeledExp)+
+}
+
+LabeledExp {
+    "=" IDENTIFIER |
+    Record_Label "=" exp
+}
+
+Record_Label
+{
+    Field_Label
+}
+
+Field_Label{
+    CONSTRUCTOR |
+    IDENTIFIER |
+    String
+}
+
+Typed_Expression {
+    Logical_Expression
+}
+
+Logical_Expression {
+    infix_appl  |                                             
+    Logical_Expression "||" infix_appl  |
+    Logical_Expression "&&" infix_appl  
+}
+
+infix_appl 
+{
+    Unary_Expression |
+    Unary_Expression OPERATOR |
+    Unary_Expression OPERATOR infix_appl | 
+    Unary_Expression "::" infix_appl |
+    Unary_Expression "-" infix_appl |
+    Unary_Expression "-." infix_appl |
+    Unary_Expression "$" infix_appl |
+    Unary_Expression "!" infix_appl 
+}
+
+Unary_Expression 
+{
+    "-" Unary_Expression |
+    "-." Unary_Expression |
+    OP Unary_Expression | 
+    Postfix_Expression | 
+    Constructor_Expression 
+}
+
+Postfix_Expression 
+{
+    Primary_Expression | 
+    Block |
+    kw<"query"> Query_Policy Block |
+    kw<"query"> "[" exp "]" Query_Policy Block |
+    kw<"query"> "[" exp "," exp "]" Query_Policy Block |
+    Postfix_Expression Arg_Spec |
+    Postfix_Expression Targ_Spec |
+    Postfix_Expression "." Record_Label |
+    Postfix_Expression "@"
+}
+
+Primary_Expression {
+    Atomic_Expression |
+    "[" Perhaps_Exps "]" |
+    Linearity ArgLists perhaps_location Block |
+    Xml
+}
+
+Linearity {
+    fun_kind
+}
+
+Perhaps_Exps {
+    exps?
+}
+Block {
+    "{" Block_Contents "}" 
+}
+
+Block_Contents{
+    case_contents |
+    ()
+}
+
+Query_Policy {
+    ()
+}
+
+Constructor_Expression {
+    CONSTRUCTOR Parenthesized_Thing? 
+}
+Parenthesized_Thing 
+{
+    "(" ")" |
+    "(" exps ")" 
+}
+Arg_Spec {
+    "(" Perhaps_Exps ")"
+}
+
+
+Targ_Spec {
+    "[" TypeArgList "]" 
+}
+
+TypeArgList {
+    TypeArg ("," TypeArg)+
+  }
+
+TypeArg{
+      Datatype |
+      Braced_Fieldspec |
+      "{" erow "}"
+  }
+
+  Braced_Fieldspec 
+  {
+      "{" ":" Datatype "}" |
+      "{" "-" "}" |
+      "{" IDENTIFIER "}" |
+      "{" "_" "}"   }
+
+
+Atomic_Expression {
+    constant |
+    Parenthesized_Thing |
+    IDENTIFIER
+}
+
+Perhaps_DB_Driver{
+    Atomic_Expression Perhaps_DB_Args
+}
+Perhaps_DB_Args{
+    Atomic_Expression?
+}
+
+Conditional_Expression { kw<"if"> "(" exp ")" exp  kw<"else"> exp }
+perhaps_location {
+    kw<"server"> |
+    kw<"client"> |
+    ()
+}
+
+Tl_Var_Binding { kw<"var"> Var perhaps_location "=" exp}
+
+Varlist {
+    Typearg ("," Typearg)+
+}
+
+Typearg {
+    IDENTIFIER 
+}
+
+ParenthesizedDatatypes {
+    "(" ")" |
+    "(" datatypes ")"
+}
+
+datatypes {
+    Datatype ("," Datatype)+
+}
+
+MuDatatype {
+    kw<"mu"> IDENTIFIER "." MuDatatype |
+    ForallDatatype
+}
+
+
+ForallDatatype{
+    kw<"forall"> Varlist "." Datatype
+}
+
+nonrec_eff_var 
+{
+    IDENTIFIER |
+    "_"
+}
+
+hear_arrow_prefix 
+{
+    "{" ":" Datatype "}" |
+    "{" ":" Datatype "|" nonrec_eff_var "}"
+}
+
+StraightArrow {
+    ParenthesizedDatatypes StraightArrow_prefix "->" Datatype |
+    ParenthesizedDatatypes "->" Datatype 
+}
+
+StraightArrow_prefix 
+{
+    hear_arrow_prefix | arrow_prefix |
+    "-" nonrec_eff_var 
+}
+
+arrow_prefix {
+    "{" erow "}" 
+}
+
+erow {
+    ""
+}
+
+SquigglyArrow {
+    ParenthesizedDatatypes squig_arrow_prefix "~>" Datatype |
+    ParenthesizedDatatypes "~>" Datatype
+}
+
+squig_arrow_prefix 
+{
+    hear_arrow_prefix | arrow_prefix |
+    "~" nonrec_eff_var 
+}
+Datatype {
+    MuDatatype | StraightArrow | SquigglyArrow | PrimaryDatatype 
+}
+
+primitiveType {
+    @specialize[@name=PrimitiveType]<TypeName, 
+    "Bool" | "Char" | "Int" | "Float" | "XmlItem" | "String" | "DateTime">
+}
+
+constant {
+    Number | 
+    String |
+    kw<"true"> |
+    kw<"false">
+}
+
+Typedecl {
+    kw<"typename"> CONSTRUCTOR typeargs_opt "=" Datatype 
+}
+
+typeargs_opt {
+    "(" Varlist ")" |
+    () 
+}
+
+Signatures {
+    Signature
+}
+
+Signature 
+{
+    kw<"sig"> Var ":" Datatype
+}
+
+Var {
+    VARIABLE
+}
+
+MultiArgs {
+    ("(" (Pattern ("," Pattern)*)? ")")
+}
+ArgLists {
+    MultiArgs+ 
+}
+
+fun_kind {
+    kw<"fun">
+}
+binding 
+{
+    kw<"var"> Pattern "=" exp ";" |
+    exp ";" |
+    Signatures fun_kind IDENTIFIER ArgLists perhaps_location Block |
+    fun_kind IDENTIFIER ArgLists perhaps_location Block |
+    Typedecl ";" 
+}
+MutualBindings 
+{
+    binding |
+    MutualBindings binding
+}
+mutual_binding_block {
+    kw<"mutual"> "{" MutualBindings "}"
+}
+binding_or_mutual {
+    binding |
+    mutual_binding_block
+}
+bindings 
+{
+    binding_or_mutual |
+    bindings binding_or_mutual
+}
+
+case_contents {
+    bindings exp |
+    exp 
+}
+
+RecordLabel {
+    FieldLabel
+}
+LabelledPattern {
+    "=" IDENTIFIER |
+    RecordLabel "=" Pattern
+}
+LabelledPatterns {
+    LabelledPattern(","LabelledPattern)*
+}
+
+FieldLabel{
+    CONSTRUCTOR |
+    IDENTIFIER 
+}
+
+Constructors {
+    CONSTRUCTOR(","CONSTRUCTOR)*
+}
+
+Patterns 
+{
+    Pattern(","Pattern)*
+}
+
+ParethesizedPattern {
+    "(" ")" |
+    "(" Pattern ")" |
+    "(" Pattern "," Patterns ")" |
+    "(" LabelledPatterns ("|" Pattern)? ")" 
+}
+
+PrimaryPattern {
+    IDENTIFIER |
+    "_" |
+    constant |
+    "[" "]" |
+    "[" Patterns "]" |
+    ParethesizedPattern
+}
+
+NegativePattern {
+    PrimaryPattern |
+    "-" CONSTRUCTOR |
+    "-" "(" Constructors")"
+}
+ConstructorPattern 
+{
+    NegativePattern |
+    CONSTRUCTOR (ParethesizedPattern)? 
+}
+
+ConsPattern {
+    ConstructorPattern |
+    ConstructorPattern "::" ConsPattern
+}
+
+TypedPattern {
+    ConsPattern |
+    ConsPattern "as" IDENTIFIER
+}
+
+Pattern {
+    TypedPattern |
+    TypedPattern ":" primary_datatype_pos 
+}
+
+primary_datatype_pos {
+    PrimaryDatatype
+}
+
+PrimaryDatatype {
+    ParenthesizedDatatypes |
+    "(" RFields ")" |
+    "[|" Vrow "|]" |
+    "[" Datatype "]" |
+    TypeVar |
+    CONSTRUCTOR "(" TypeArgList ")" |
+    CONSTRUCTOR |
+    primitiveType
+
+}
+
+Vrow {
+    VFields |
+    () 
+}
+
+RFields {
+    RField |
+    RField? "|" RowVar | 
+    RField "," RFields
+}
+
+RowVar 
+{
+    nonrec_row_var |
+    "(" kw<"mu"> IDENTIFIER "." Fields ")"
+}
+
+nonrec_row_var 
+{
+    IDENTIFIER |
+    "_"
+}
+
+Fields {
+    Field |
+    Field? "," RowVar | 
+    Field "," Fields
+}
+
+Field {
+    CONSTRUCTOR |
+    Field_Label FieldSpec
+}
+
+RField {
+    Record_Label FieldSpec
+}
+
+FieldSpec 
+{
+    Braced_Fieldspec |
+    ":" Datatype |
+    "-"
+}
+
+
+
+VFields {
+    VField |
+    VField? "|" VRowVar |
+    VField "|" VFields
+}
+
+VField{
+    CONSTRUCTOR |
+    CONSTRUCTOR FieldSpec
+}
+
+TypeVar {
+    IDENTIFIER |
+    "_"
+}
+
+VRowVar{
+    nonrec_row_var |
+    "(" kw<"mu"> IDENTIFIER "." VFields ")"
+
+}
+
+
+case {
+    kw<"case"> Pattern "->" case_contents
+}
+
+Case_Expression {
+    kw<"switch"> "(" exp ")" "{" case* "}" |
+    kw<"receive"> "{" case* "}" 
+}
+
+
+
+DBExpression{
+    DeleteExpression
+}
+
+DeleteExpression {
+    kw<"delete"> "(" Pattern mode_not_valid exp ")" PerhapsWhere
+}
+
+mode_not_valid{
+    "<--" | "<-t-"
+}
+
+IterationExpression 
+{
+    kw<"for"> "(" PerhapsGenerator ")" PerhapsWhere PerhapsOrderBy exp
+}
+
+PerhapsGenerator 
+{
+    Generator ("," Generator)* 
+}
+
+PerhapsWhere 
+{
+    () |
+    kw<"where"> "(" exp ")"
+}
+
+PerhapsOrderBy
+{
+    ()  |
+    kw<"orderby"> "(" exps ")"
+}
+
+Generator 
+{
+    ListGenerator |
+    table_generator
+}
+
+ListGenerator 
+{
+    Pattern "<-" exp
+}
+
+table_generator 
+{
+    Pattern "<--" exp |
+    Pattern "<-t-" exp |
+    Pattern "<-v-" exp
+}
+
+TableExpression
+{
+    kw<"table"> exp kw<"with"> Datatype perhaps_table_constraints table_keys? kw<"from"> exp 
+}
+
+perhaps_table_constraints 
+{
+    (kw<"where"> table_constraints)?
+}
+
+table_keys {
+    kw<"tablekeys"> exp 
+} 
+
+table_constraints 
+{
+    record_field_pair ("," record_field_pair)+
+}
+
+record_field_pair 
+{
+    Record_Label field_constraints
+}
+
+field_constraints 
+{
+    field_constraint+
+}
+
+field_constraint 
+{
+    kw<"readonly"> |
+    kw<"default">
+}
+
+Xmllid{
+    Var
+}
+
+AttrList{
+    Attr*
+}
+
+Attr 
+{
+    Xmllid "=" '"' AttrVal '"' | 
+    Xmllid "=" '"' '"'
+}
+
+AttrVal 
+{
+    AttrValEntry+
+}
+
+AttrValEntry 
+{
+    Block |
+    String
+}
+
+Xml 
+{
+    "<" IDENTIFIER AttrList Block? "/>" | 
+    "<" IDENTIFIER AttrList Block? ">" XmlContents* ENDTAG |
+    "<#>" Block? XmlContents "</#>"
+}
+
+ENDTAG{
+    "</" IDENTIFIER ">"
+}
+
+XmlContents 
+{
+    Block |
+    FormletBinding |
+    FormletPlacement |
+    PagePlacement |
+    Xml |
+    CDATA 
+}
+
+FormletBinding 
+{
+    "{" Logical_Expression "->" Pattern "}"
+}
+
+FormletPlacement 
+{
+    "{" Logical_Expression "=>" Logical_Expression "}" |
+    "{" Logical_Expression "=>" Logical_Expression kw<"with"> Logical_Expression "}"
+}
+
+PagePlacement{
+ "{|" exp "|}"
+} 
+
+FormletExpession {
+    kw<"formlet"> Xml kw<"yields"> exp | 
+    kw<"page"> Xml
+ }
+
+ op{
+    OPERATOR
+ }
+
+ OPERATOR{
+    Cons | BitwiseXOR | LogicalXOR | Exponent | Multiplication | Division | Addition | FloatMultiply | FloatDivide | FloatAdd | Subtraction | FloatSubtract | LogicalNOT | Concatenation | RegexMatch | Equal | NotEqual | LessThan | LessEqual | GreaterEqual | GreaterThan | LogicalAND | LogicalOR | BitShiftRight | FunctionApply
+ }
